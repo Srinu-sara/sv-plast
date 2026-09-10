@@ -5,7 +5,6 @@
   "description": "SV PLAST - Ultra-Fine Iranian Gypsum Plaster Official Website",
   "scripts": {
     "dev": "npx serve .",
-    "build": "echo 'Production static build ready for Vercel.'",
     "start": "npx serve .",
     "deploy": "npx vercel --prod"
   },
