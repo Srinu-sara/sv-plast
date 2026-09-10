@@ -18,3 +18,7 @@ desktop.ini
 .idea/
 *.sublime-project
 *.sublime-workspace
+
+# Scratch files
+scratch/
+
