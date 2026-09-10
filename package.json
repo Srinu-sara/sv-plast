@@ -1,0 +1,21 @@
+{
+  "name": "svplast",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SV PLAST - Ultra-Fine Iranian Gypsum Plaster Official Website",
+  "scripts": {
+    "dev": "npx serve .",
+    "build": "echo 'Production static build ready for Vercel.'",
+    "start": "npx serve .",
+    "deploy": "npx vercel --prod"
+  },
+  "keywords": [
+    "gypsum",
+    "plaster",
+    "svplast",
+    "iranian-gypsum",
+    "construction"
+  ],
+  "author": "SV PLAST",
+  "license": "UNLICENSED"
+}
