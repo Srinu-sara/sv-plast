@@ -26,6 +26,16 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="images/svplast_logo.png">
 
+  <!-- Code & Asset Protection Guardian -->
+  <script>
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
+    window.addEventListener('keydown', function(e) {
+      if (e.key === 'F12' || e.keyCode === 123) { e.preventDefault(); return false; }
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && ['I','J','C','i','j','c'].indexOf(e.key) !== -1) { e.preventDefault(); return false; }
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'u' || e.key === 'U' || e.key === 's' || e.key === 'S')) { e.preventDefault(); return false; }
+    });
+  </script>
+
   <!-- Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
 

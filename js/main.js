@@ -453,5 +453,63 @@ document.addEventListener('DOMContentLoaded', () => {
       lightboxModal.classList.remove('active');
     }
   });
+
+  // ==========================================
+  // 10. Code & Asset Protection Guardian
+  // Disables right-click, dev shortcuts, image dragging
+  // ==========================================
+  (function initProtection() {
+    // Block context menu (Right-Click)
+    document.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      return false;
+    }, { capture: true });
+
+    // Block developer inspection shortcuts
+    window.addEventListener('keydown', (e) => {
+      // F12
+      if (e.key === 'F12' || e.keyCode === 123) {
+        e.preventDefault();
+        return false;
+      }
+      // Ctrl+Shift+I / J / C (Inspect / Console)
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && ['I','J','C','i','j','c'].includes(e.key)) {
+        e.preventDefault();
+        return false;
+      }
+      // Ctrl+U (View Page Source)
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'u' || e.key === 'U')) {
+        e.preventDefault();
+        return false;
+      }
+      // Ctrl+S (Save Page)
+      if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) {
+        e.preventDefault();
+        return false;
+      }
+    }, { capture: true });
+
+    // Block image & canvas dragging
+    document.addEventListener('dragstart', (e) => {
+      if (e.target.tagName === 'IMG' || e.target.tagName === 'CANVAS') {
+        e.preventDefault();
+        return false;
+      }
+    });
+
+    // Console Intellectual Property Notice
+    try {
+      console.clear();
+      console.log(
+        '%c⚠ SV PLAST — PROTECTED INTELLECTUAL PROPERTY',
+        'color: #4ade80; font-size: 16px; font-weight: bold; background: #050805; padding: 6px 12px; border: 1px solid #2b9e37; border-radius: 4px;'
+      );
+      console.log(
+        '%cAll architecture, custom animations, design assets, and source files are proprietary to SV PLAST. Unauthorized copying or distribution is prohibited.',
+        'font-size: 11px; color: #888888;'
+      );
+    } catch (_) {}
+  })();
 });
+
 

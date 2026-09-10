@@ -67,11 +67,21 @@ body {
   line-height: 1.6;
   background-color: transparent;
   position: relative;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
-img {
+img, canvas {
   max-width: 100%;
   display: block;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  -webkit-touch-callout: none;
 }
 
 a {
@@ -80,8 +90,16 @@ a {
   transition: var(--transition-smooth);
 }
 
-button, input, textarea {
+button, input, textarea, select {
   font-family: inherit;
+}
+
+/* Allow normal text selection inside input fields so visitors can submit forms */
+input, textarea, select {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
 }
 
 /* ==========================================================================
