@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SV PLAST | Content Publisher & Admin Manager</title>
+  <link rel="icon" type="image/png" href="images/svplast_logo.png">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    :root {
+      --bg-dark: #0a0f12;
+      --card-bg: rgba(18, 26, 31, 0.85);
+      --border-color: rgba(255, 255, 255, 0.12);
+      --brand-green: #00d084;
+      --brand-emerald: #059669;
+      --brand-gold: #f59e0b;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+    }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .admin-header {
+      background: rgba(10, 15, 18, 0.95);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1rem 1.5rem;
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .admin-nav {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+
+    .brand-logo-img {
+      height: 40px;
+      width: auto;
+    }
+
+    .badge-admin {
+      background: linear-gradient(135deg, var(--brand-emerald), var(--brand-green));
+      color: #000;
+      font-weight: 700;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .admin-container {
+      max-width: 900px;
+      width: 100%;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      box-sizing: border-box;
+      flex: 1;
+    }
+
+    .admin-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(16px);
+      margin-bottom: 2rem;
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card-subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Section Tabs */
+    .section-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 0.5rem;
+      border-radius: 14px;
+      border: 1px solid var(--border-color);
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.85rem 1rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      color: #e5e7eb;
+    }
+
+    .form-input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 0.9rem 1.1rem;
+      color: #ffffff;
+      font-size: 0.95rem;
+      box-sizing: border-box;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--brand-green);
+      box-shadow: 0 0 0 3px rgba(0, 208, 132, 0.2);
+    }
+
+    .form-hint {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
+    }
+
+    /* File Drop Zone */
+    .file-dropzone {
+      border: 2px dashed rgba(255, 255, 255, 0.2);
+      border-radius: 14px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .file-dropzone:hover, .file-dropzone.dragover {
+      border-color: var(--brand-green);
+      background: rgba(0, 208, 132, 0.05);
+    }
+
+    .dropzone-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    #file-input {
+      display: none;
+    }
+
+    .img-preview-box {
+      margin-top: 1rem;
+      display: none;
+      position: relative;
+      max-width: 300px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    .img-preview-box img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Primary Send Button */
+    .btn-send {
+      width: 100%;
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: #ffffff;
+      border: none;
+      padding: 1.1rem;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
+    }
+
+    .btn-send:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 25px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-send:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Live Status Toast */
+    .toast-msg {
+      display: none;
+      padding: 1rem;
+      border-radius: 12px;
+      margin-top: 1.25rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .toast-success {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid #10b981;
+      color: #34d399;
+    }
+
+    .toast-error {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid #ef4444;
+      color: #f87171;
+    }
+
+    /* Managed Items List */
+    .manage-list {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .item-card {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .item-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .item-thumb {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #111;
+      flex-shrink: 0;
+    }
+
+    .item-details {
+      min-width: 0;
+    }
+
+    .item-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 0.25rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .item-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .btn-delete {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+      padding: 0.5rem 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-delete:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    /* Modal Security Auth */
+    .pin-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(15px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+    }
+
+    .pin-box {
+      background: #121a1f;
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+    }
+
+    @media (max-width: 640px) {
+      .section-tabs {
+        grid-template-columns: 1fr;
+      }
+      .admin-container {
+        padding: 0 1rem;
+      }
+      .admin-card {
+        padding: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Security Passcode Auth Modal -->
+  <div class="pin-overlay" id="pin-overlay">
+    <div class="pin-box">
+      <div style="font-size: 3rem; margin-bottom: 0.5rem;">🔒</div>
+      <h2 style="margin: 0 0 0.5rem 0; font-size: 1.5rem;">Admin Verification</h2>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
+        Enter passcode to publish content to SV PLAST website.<br>
+        <!-- <small style="color: var(--brand-green);">(Default PIN: 1234)</small> -->
+      </p>
+      <div class="form-group">
+        <input type="password" id="pin-input" class="form-input" placeholder="Enter PIN (e.g. 1234)" style="text-align: center; font-size: 1.25rem; letter-spacing: 4px;">
+      </div>
+      <button class="btn-send" id="pin-submit-btn">Unlock Publisher</button>
+      <div id="pin-error" style="color: #f87171; font-size: 0.85rem; margin-top: 1rem; display: none;">Invalid PIN code. Please try again.</div>
+    </div>
+  </div>
+
+  <!-- Main Admin Header -->
+  <header class="admin-header">
+    <div class="admin-nav">
+      <a href="index.html" class="brand-group">
+        <img src="images/svplast_logo.png" alt="SV PLAST Logo" class="brand-logo-img">
+        <div>
+          <strong style="display: block; font-size: 1.1rem; line-height: 1.2;">SV PLAST</strong>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Content Sender App</span>
+        </div>
+      </a>
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <span class="badge-admin">Admin Sender</span>
+        <a href="index.html" style="color: var(--brand-green); text-decoration: none; font-size: 0.9rem; font-weight: 600;">← View Main App</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Form Container -->
+  <div class="admin-container">
+    
+    <div class="admin-card">
+      <h1 class="card-title">🚀 Post New Item to SV PLAST</h1>
+      <p class="card-subtitle">Select section below, provide the URL or photo from device, and click <strong>Send</strong>. SV PLAST automatically keeps the <strong>5 latest posts</strong> in each section.</p>
+
+      <!-- 1. Section Selector Tabs -->
+      <div class="section-tabs">
+        <button class="tab-btn active" data-section="instagram">
+          <span>📸</span> Instagram Video
+        </button>
+        <button class="tab-btn" data-section="youtube">
+          <span>🎥</span> YouTube Video
+        </button>
+        <button class="tab-btn" data-section="gallery">
+          <span>🖼️</span> Gallery Photo
+        </button>
+      </div>
+
+      <!-- Sender Form -->
+      <form id="sender-form" enctype="multipart/form-data">
+        <input type="hidden" id="selected-section" name="section" value="instagram">
+
+        <!-- Title Field -->
+        <div class="form-group">
+          <label class="form-label" for="item-title">Title / Caption</label>
+          <input type="text" id="item-title" name="title" class="form-input" placeholder="e.g., Ultra-Fine 200 Mesh Plastering Demo" required>
+        </div>
+
+        <!-- Dynamic Section Field: Instagram / YouTube URL -->
+        <div class="form-group" id="url-field-group">
+          <label class="form-label" id="url-label" for="item-url">Public URL</label>
+          <input type="url" id="item-url" name="url" class="form-input" placeholder="https://www.instagram.com/p/... or Reel URL">
+          <div class="form-hint" id="url-hint">Paste the full public URL from Instagram (Reels or Post).</div>
+        </div>
+
+        <!-- Dynamic Section Field: Photo File Picker (for Gallery) -->
+        <div class="form-group" id="photo-field-group" style="display: none;">
+          <label class="form-label">Select Photo from Device</label>
+          <div class="file-dropzone" id="dropzone">
+            <span class="dropzone-icon">📷</span>
+            <strong style="display: block; margin-bottom: 0.25rem;">Tap to select photo from device</strong>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Supports JPG, PNG, WEBP (Max 10MB)</span>
+            <input type="file" id="file-input" name="photo" accept="image/*">
+          </div>
+          <div class="img-preview-box" id="preview-box">
+            <img id="preview-img" src="" alt="Preview">
+          </div>
+        </div>
+
+        <!-- Location Field (Optional for Gallery) -->
+        <div class="form-group" id="location-field-group" style="display: none;">
+          <label class="form-label" for="item-location">Project Location</label>
+          <input type="text" id="item-location" name="location" class="form-input" placeholder="e.g., Hyderabad, Telangana">
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-send" id="submit-btn">
+          <span>📤</span> Send &amp; Update SV PLAST App
+        </button>
+
+        <!-- Notification Toast -->
+        <div class="toast-msg" id="toast"></div>
+      </form>
+
+    </div>
+
+    <!-- Management Dashboard Card -->
+    <div class="admin-card">
+      <h2 class="card-title">⚙️ Currently Live Items (Showing Top 5)</h2>
+      <p class="card-subtitle">Manage existing items across Instagram, YouTube, and Photo Gallery sections.</p>
+
+      <div class="manage-list" id="manage-list">
+        <div style="text-align: center; color: var(--text-muted); padding: 2rem;">Loading live items...</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // 1. PIN Security Logic
+      const pinOverlay = document.getElementById('pin-overlay');
+      const pinInput = document.getElementById('pin-input');
+      const pinSubmitBtn = document.getElementById('pin-submit-btn');
+      const pinError = document.getElementById('pin-error');
+
+      // Check if unlocked in session
+      if (sessionStorage.getItem('sv_admin_unlocked') === 'true') {
+        pinOverlay.style.display = 'none';
+      }
+
+      function checkPin() {
+        const val = pinInput.value.trim();
+        if (val === '2468' || val === 'svplast') {
+          sessionStorage.setItem('sv_admin_unlocked', 'true');
+          pinOverlay.style.display = 'none';
+        } else {
+          pinError.style.display = 'block';
+        }
+      }
+
+      pinSubmitBtn.addEventListener('click', checkPin);
+      pinInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') checkPin();
+      });
+
+      // 2. Section Selector Tabs
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const sectionInput = document.getElementById('selected-section');
+      const urlFieldGroup = document.getElementById('url-field-group');
+      const urlLabel = document.getElementById('url-label');
+      const urlInput = document.getElementById('item-url');
+      const urlHint = document.getElementById('url-hint');
+      const photoFieldGroup = document.getElementById('photo-field-group');
+      const locationFieldGroup = document.getElementById('location-field-group');
+
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          tabBtns.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          const sec = this.getAttribute('data-section');
+          sectionInput.value = sec;
+          
+          if (sec === 'instagram') {
+            urlFieldGroup.style.display = 'block';
+            photoFieldGroup.style.display = 'block';
+            locationFieldGroup.style.display = 'none';
+            urlLabel.textContent = 'Instagram Public URL';
+            urlInput.placeholder = 'https://www.instagram.com/p/... or Reel URL';
+            urlHint.textContent = 'Paste the public link of an Instagram post or reel. Optionally select a cover thumbnail photo below.';
+            urlInput.required = true;
+          } else if (sec === 'youtube') {
+            urlFieldGroup.style.display = 'block';
+            photoFieldGroup.style.display = 'none';
+            locationFieldGroup.style.display = 'none';
+            urlLabel.textContent = 'YouTube Public URL';
+            urlInput.placeholder = 'https://www.youtube.com/watch?v=... or Shorts URL';
+            urlHint.textContent = 'Paste the public link of a YouTube video or Shorts.';
+            urlInput.required = true;
+          } else if (sec === 'gallery') {
+            urlFieldGroup.style.display = 'none';
+            photoFieldGroup.style.display = 'block';
+            locationFieldGroup.style.display = 'block';
+            urlInput.required = false;
+          }
+        });
+      });
+
+      // 3. File Dropzone & Image Preview
+      const dropzone = document.getElementById('dropzone');
+      const fileInput = document.getElementById('file-input');
+      const previewBox = document.getElementById('preview-box');
+      const previewImg = document.getElementById('preview-img');
+
+      dropzone.addEventListener('click', () => fileInput.click());
+
+      dropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+      });
+      dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+      dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+          fileInput.files = e.dataTransfer.files;
+          handleFilePreview(fileInput.files[0]);
+        }
+      });
+
+      fileInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+          handleFilePreview(this.files[0]);
+        }
+      });
+
+      function handleFilePreview(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          previewImg.src = e.target.result;
+          previewBox.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+
+      // 4. Submit & Send Post Form
+      const senderForm = document.getElementById('sender-form');
+      const submitBtn = document.getElementById('submit-btn');
+      const toast = document.getElementById('toast');
+
+      function showToast(msg, isSuccess) {
+        toast.className = 'toast-msg ' + (isSuccess ? 'toast-success' : 'toast-error');
+        toast.textContent = msg;
+        toast.style.display = 'block';
+        setTimeout(() => {
+          toast.style.display = 'none';
+        }, 5000);
+      }
+
+      senderForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span>⏳</span> Sending to SV PLAST...';
+
+        const formData = new FormData(senderForm);
+        const currentSection = sectionInput.value;
+
+        try {
+          const response = await fetch('/api/media/add', {
+            method: 'POST',
+            body: formData
+          });
+          const result = await response.json();
+
+          if (result.success) {
+            showToast(result.message || 'Successfully updated SV PLAST app!', true);
+            senderForm.reset();
+            previewBox.style.display = 'none';
+            fetchLiveItems();
+          } else {
+            showToast(result.message || 'Failed to send item.', false);
+          }
+        } catch (err) {
+          console.error(err);
+          showToast('Error connecting to SV PLAST server.', false);
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<span>📤</span> Send &amp; Update SV PLAST App';
+        }
+      });
+
+      // 5. Fetch & Render Currently Live Items (Delete Manager)
+      const manageList = document.getElementById('manage-list');
+
+      async function fetchLiveItems() {
+        try {
+          const res = await fetch('/api/media');
+          const resData = await res.json();
+          if (resData.success) {
+            renderManageItems(resData.data);
+          }
+        } catch (e) {
+          manageList.innerHTML = '<div style="color: var(--text-muted); text-align: center;">Could not load live items.</div>';
+        }
+      }
+
+      function renderManageItems(data) {
+        let html = '';
+        const sections = ['instagram', 'youtube', 'gallery'];
+
+        sections.forEach(sec => {
+          const items = data[sec] || [];
+          const secTitle = sec.toUpperCase();
+          const icon = sec === 'instagram' ? '📸' : (sec === 'youtube' ? '🎥' : '🖼️');
+
+          html += `<div style="font-weight: 700; color: var(--brand-green); margin-top: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; font-size: 0.95rem;">
+            ${icon} ${secTitle} SECTION (${items.length}/5)
+          </div>`;
+
+          if (items.length === 0) {
+            html += `<div style="color: var(--text-muted); font-size: 0.85rem; padding: 0.5rem 0;">No items posted yet.</div>`;
+          } else {
+            items.forEach(item => {
+              const thumb = item.imageUrl || `https://img.youtube.com/vi/${item.videoId}/mqdefault.jpg` || 'images/svplast_logo.png';
+              html += `
+                <div class="item-card">
+                  <div class="item-info">
+                    <img src="${thumb}" class="item-thumb" onerror="this.src='images/svplast_logo.png'">
+                    <div class="item-details">
+                      <div class="item-title">${item.title || 'Untitled'}</div>
+                      <div class="item-meta">${item.date || ''} ${item.location ? '• ' + item.location : ''}</div>
+                    </div>
+                  </div>
+                  <button class="btn-delete" onclick="deleteItem('${sec}', '${item.id}')">Delete</button>
+                </div>
+              `;
+            });
+          }
+        });
+
+        manageList.innerHTML = html;
+      }
+
+      window.deleteItem = async function(sec, id) {
+        if (!confirm('Are you sure you want to delete this item from SV PLAST?')) return;
+        try {
+          const res = await fetch('/api/media/delete', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ section: sec, id: id })
+          });
+          const result = await res.json();
+          if (result.success) {
+            showToast('Item deleted successfully.', true);
+            fetchLiveItems();
+          } else {
+            showToast('Could not delete item.', false);
+          }
+        } catch (e) {
+          showToast('Error sending delete request.', false);
+        }
+      };
+
+      fetchLiveItems();
+    });
+  </script>
+</body>
+</html>

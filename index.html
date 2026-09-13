@@ -139,8 +139,10 @@
         <ul class="nav-links" role="list">
           <li><a href="#mission-vision" class="nav-link">Why Gypsum</a></li>
           <li><a href="#advantages" class="nav-link">9 Advantages</a></li>
-          <li><a href="#our-work" class="nav-link">Our Work</a></li>
-          <li><a href="#why-svplast" class="nav-link">Specifications</a></li>
+          <li><a href="#insta-videos" class="nav-link">Instagram</a></li>
+          <li><a href="#youtube-videos" class="nav-link">YouTube</a></li>
+          <li><a href="#photo-gallery" class="nav-link">Gallery</a></li>
+          <li><a href="#why-svplast" class="nav-link">Specs</a></li>
           <li><a href="#calculator" class="nav-link">Estimator</a></li>
           <li><a href="#contact-us" class="nav-link">Contact</a></li>
         </ul>
@@ -176,7 +178,9 @@
         <li><a href="#home" class="drawer-link active">Home</a></li>
         <li><a href="#mission-vision" class="drawer-link">Why Gypsum</a></li>
         <li><a href="#advantages" class="drawer-link">9 Advantages</a></li>
-        <li><a href="#our-work" class="drawer-link">Our Work &amp; Projects</a></li>
+        <li><a href="#insta-videos" class="drawer-link">📸 Instagram Videos</a></li>
+        <li><a href="#youtube-videos" class="drawer-link">🎥 YouTube Videos</a></li>
+        <li><a href="#photo-gallery" class="drawer-link">🖼️ Photo Gallery</a></li>
         <li><a href="#why-svplast" class="drawer-link">Technical Specifications</a></li>
         <li><a href="#calculator" class="drawer-link">Material &amp; Cost Estimator</a></li>
         <li><a href="#faq" class="drawer-link">Contractor FAQ</a></li>
@@ -419,6 +423,70 @@
       </div>
     </div>
   </section>
+
+  <!-- ==========================================
+       DYNAMIC MEDIA SHOWCASE (INSTAGRAM, YOUTUBE, GALLERY)
+       ========================================== -->
+  
+  <!-- 1. INSTAGRAM VIDEOS SECTION (MAX 5 ITEMS) -->
+  <section class="section-media" id="insta-videos">
+    <div class="container">
+      <div class="section-head">
+        <div class="badge-pill">
+          <span class="badge-dot"></span>
+          <span>Social Media Highlights</span>
+        </div>
+        <h2 class="section-title">Instagram <span class="text-gradient-brand">Reels &amp; Videos</span></h2>
+        <p class="section-subtitle">Showing 5 latest Instagram updates managed via the companion sender app.</p>
+      </div>
+      <div class="media-grid insta-grid" id="insta-videos-grid">
+        <!-- Dynamically rendered by js/media-loader.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. YOUTUBE VIDEOS SECTION (MAX 5 ITEMS) -->
+  <section class="section-media" id="youtube-videos">
+    <div class="container">
+      <div class="section-head">
+        <div class="badge-pill">
+          <span class="badge-dot"></span>
+          <span>Video Showcase</span>
+        </div>
+        <h2 class="section-title">YouTube <span class="text-gradient-brand">Project Videos</span></h2>
+        <p class="section-subtitle">Watch application demos and site walkthroughs (Showing 5 latest videos).</p>
+      </div>
+      <div class="media-grid yt-grid" id="youtube-videos-grid">
+        <!-- Dynamically rendered by js/media-loader.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. PHOTO GALLERY SECTION (MAX 5 ITEMS) -->
+  <section class="section-media" id="photo-gallery">
+    <div class="container">
+      <div class="section-head">
+        <div class="badge-pill">
+          <span class="badge-dot"></span>
+          <span>Site Photos</span>
+        </div>
+        <h2 class="section-title">Project <span class="text-gradient-brand">Photo Gallery</span></h2>
+        <p class="section-subtitle">High-resolution project photos uploaded directly from device (Showing 5 latest photos).</p>
+      </div>
+      <div class="media-grid gallery-grid" id="photo-gallery-grid">
+        <!-- Dynamically rendered by js/media-loader.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery Lightbox Viewer -->
+  <div class="lightbox-modal" id="lightbox-modal">
+    <div class="lightbox-content">
+      <button class="lightbox-close" id="lightbox-close" aria-label="Close Lightbox">&times;</button>
+      <img src="" id="lightbox-img" alt="Gallery Zoom Photo">
+      <div class="lightbox-caption" id="lightbox-caption"></div>
+    </div>
+  </div>
 
   <!-- ==========================================
        4. OUR WORK IN ACTION
@@ -1091,6 +1159,7 @@
   <!-- Scripts -->
   <script src="js/scroll-canvas.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/media-loader.js"></script>
 
 </body>
 </html>

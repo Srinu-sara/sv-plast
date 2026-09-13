@@ -1,0 +1,113 @@
+{
+  "instagram": [
+    {
+      "id": "insta_1789264723205",
+      "url": "https://www.instagram.com/reel/DdL4fkUywKb/?utm_source=ig_web_copy_link&stkn=NTc4MTIwNjQ2YQ==",
+      "imageUrl": "images/frame_018.webp",
+      "title": "Ultra-Fine Gypsum Mirror Finish Demo Reel",
+      "date": "2026-09-13"
+    },
+    {
+      "id": "insta_2",
+      "url": "https://www.instagram.com/p/C2o8bKqR4xy/",
+      "imageUrl": "images/frame_025.webp",
+      "title": "Zero Water Curing Application in Hyderabad",
+      "date": "2026-09-08"
+    },
+    {
+      "id": "insta_3",
+      "url": "https://www.instagram.com/p/C1n7cJsT5zz/",
+      "imageUrl": "images/finished_gypsum_wall.webp",
+      "title": "Single Coat Plastering vs Cement & Putty",
+      "date": "2026-09-05"
+    },
+    {
+      "id": "insta_4",
+      "url": "https://www.instagram.com/p/C0m6dKtU6aa/",
+      "imageUrl": "images/work_curved_ceiling.webp",
+      "title": "Commercial Curved Ceiling Gypsum Finish",
+      "date": "2026-09-01"
+    },
+    {
+      "id": "insta_5",
+      "url": "https://www.instagram.com/p/Czc5eLuV7bb/",
+      "imageUrl": "images/product_bag.webp",
+      "title": "Direct Import Iranian 200-Mesh Gypsum Bag",
+      "date": "2026-08-28"
+    }
+  ],
+  "youtube": [
+    {
+      "id": "yt_1",
+      "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "videoId": "dQw4w9WgXcQ",
+      "title": "SV PLAST Gypsum Plaster Machine Application",
+      "date": "2026-09-12"
+    },
+    {
+      "id": "yt_2",
+      "url": "https://www.youtube.com/watch?v=3JZ_D3ELwOQ",
+      "videoId": "3JZ_D3ELwOQ",
+      "title": "How Iranian Gypsum Saves 14 Days Water Curing",
+      "date": "2026-09-09"
+    },
+    {
+      "id": "yt_3",
+      "url": "https://www.youtube.com/watch?v=L_LUpnjgPso",
+      "videoId": "L_LUpnjgPso",
+      "title": "Direct Plastering on AAC Blocks & RCC Concrete",
+      "date": "2026-09-04"
+    },
+    {
+      "id": "yt_4",
+      "url": "https://www.youtube.com/watch?v=kJQP7kiw5Fk",
+      "videoId": "kJQP7kiw5Fk",
+      "title": "SV PLAST 25kg Bag Unboxing & Mix Ratio",
+      "date": "2026-08-30"
+    },
+    {
+      "id": "yt_5",
+      "url": "https://www.youtube.com/watch?v=fJ9rUzIMcZQ",
+      "videoId": "fJ9rUzIMcZQ",
+      "title": "Fire & Thermal Insulation Test of SV PLAST",
+      "date": "2026-08-25"
+    }
+  ],
+  "gallery": [
+    {
+      "id": "gal_1",
+      "imageUrl": "images/work_curved_ceiling.webp",
+      "title": "Organic Curved Gypsum Ceiling with Cove Lighting",
+      "location": "Hyderabad, Telangana",
+      "date": "2026-09-11"
+    },
+    {
+      "id": "gal_2",
+      "imageUrl": "images/frame_058.webp",
+      "title": "Sculpted Gypsum Interior Hallway",
+      "location": "Bengaluru, Karnataka",
+      "date": "2026-09-07"
+    },
+    {
+      "id": "gal_3",
+      "imageUrl": "images/work_commercial_hall.webp",
+      "title": "Commercial Headquarters Double Height Lobby",
+      "location": "Mumbai, Maharashtra",
+      "date": "2026-09-03"
+    },
+    {
+      "id": "gal_4",
+      "imageUrl": "images/finished_gypsum_wall.webp",
+      "title": "Glass-Smooth Precision Finish Wall",
+      "location": "Pan-India Project",
+      "date": "2026-08-29"
+    },
+    {
+      "id": "gal_5",
+      "imageUrl": "images/product_bag.webp",
+      "title": "25kg Pure Iranian Gypsum Plaster Bags",
+      "location": "Warehouse Stock",
+      "date": "2026-08-24"
+    }
+  ]
+}

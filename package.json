@@ -4,9 +4,15 @@
   "private": true,
   "description": "SV PLAST - Ultra-Fine Iranian Gypsum Plaster Official Website",
   "scripts": {
-    "dev": "npx serve .",
-    "start": "npx serve .",
+    "dev": "node server.js",
+    "start": "node server.js",
+    "serve": "npx serve .",
     "deploy": "npx vercel --prod"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1"
   },
   "keywords": [
     "gypsum",
