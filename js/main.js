@@ -78,7 +78,99 @@ document.addEventListener('DOMContentLoaded', () => {
   }, { passive: true });
 
   // ==========================================
-  // 1b. ScrollSpy (Active Navigation Highlighting)
+  // 1b. Hero Section Automatic Mobile Slideshow (3-Second Cycle)
+  // ==========================================
+  const heroSlides = document.querySelectorAll('.hero-slide');
+  const heroDots = document.querySelectorAll('.hero-slideshow-dots .slide-dot');
+  const heroTimerProgress = document.getElementById('hero-timer-progress');
+  const heroSlideshowContainer = document.getElementById('hero-slideshow');
+
+  if (heroSlides.length > 0) {
+    let currentSlideIdx = 0;
+    let slideTimer = null;
+    const SLIDE_DURATION = 3000; // Changes image every 3 seconds
+    let isSlideshowPaused = false;
+
+    function showSlide(index) {
+      currentSlideIdx = (index + heroSlides.length) % heroSlides.length;
+
+      heroSlides.forEach((slide, idx) => {
+        if (idx === currentSlideIdx) {
+          slide.classList.add('active');
+        } else {
+          slide.classList.remove('active');
+        }
+      });
+
+      heroDots.forEach((dot, idx) => {
+        if (idx === currentSlideIdx) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+
+      // Animate progress bar across 3 seconds
+      if (heroTimerProgress) {
+        heroTimerProgress.style.transition = 'none';
+        heroTimerProgress.style.width = '0%';
+        void heroTimerProgress.offsetWidth; // Force CSS reflow
+        heroTimerProgress.style.transition = `width ${SLIDE_DURATION}ms linear`;
+        heroTimerProgress.style.width = '100%';
+      }
+    }
+
+    function nextSlide() {
+      if (isSlideshowPaused) return;
+      showSlide(currentSlideIdx + 1);
+    }
+
+    function startSlideshow() {
+      stopSlideshow();
+      showSlide(currentSlideIdx);
+      slideTimer = setInterval(nextSlide, SLIDE_DURATION);
+    }
+
+    function stopSlideshow() {
+      if (slideTimer) {
+        clearInterval(slideTimer);
+        slideTimer = null;
+      }
+    }
+
+    // Dot click triggers
+    heroDots.forEach((dot) => {
+      dot.addEventListener('click', () => {
+        const targetIdx = parseInt(dot.getAttribute('data-index'), 10) || 0;
+        showSlide(targetIdx);
+        startSlideshow();
+      });
+    });
+
+    // Pause on hover or touch so user can examine photos
+    const heroCard = document.querySelector('.hero-right-card');
+    const pauseTarget = heroCard || heroSlideshowContainer;
+
+    pauseTarget?.addEventListener('mouseenter', () => {
+      isSlideshowPaused = true;
+    });
+    pauseTarget?.addEventListener('mouseleave', () => {
+      isSlideshowPaused = false;
+      startSlideshow();
+    });
+    pauseTarget?.addEventListener('touchstart', () => {
+      isSlideshowPaused = true;
+    }, { passive: true });
+    pauseTarget?.addEventListener('touchend', () => {
+      isSlideshowPaused = false;
+      startSlideshow();
+    }, { passive: true });
+
+    startSlideshow();
+  }
+
+  // ==========================================
+  // 1c. ScrollSpy (Active Navigation Highlighting)
   // ==========================================
   const spySections = document.querySelectorAll('section[id]');
   const desktopNavLinks = document.querySelectorAll('.nav-link');
@@ -201,59 +293,80 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================
-  // 4. Gypsum vs Traditional Savings Calculator
+  // 4. Gypsum vs Traditional Savings Calculator (Image 3 Design)
   // ==========================================
   const areaInput = document.getElementById('calc-area');
-  const thicknessSelect = document.getElementById('calc-thickness');
   const rangeInput = document.getElementById('calc-range');
+  const thicknessPills = document.querySelectorAll('.thickness-pill');
+  let selectedThickness = 12; // Default 12mm
 
   const outBags = document.getElementById('out-bags');
   const outWater = document.getElementById('out-water');
-  const outDays = document.getElementById('out-days');
-  const outCost = document.getElementById('out-cost');
+  const subBagNote = document.getElementById('sub-bag-note');
+
+  function updateSliderFill(rangeEl) {
+    if (!rangeEl) return;
+    const min = parseFloat(rangeEl.min) || 100;
+    const max = parseFloat(rangeEl.max) || 10000;
+    const val = parseFloat(rangeEl.value) || 1000;
+    const pct = ((val - min) / (max - min)) * 100;
+    rangeEl.style.background = `linear-gradient(to right, #16a34a 0%, #16a34a ${pct}%, #e2e8f0 ${pct}%, #e2e8f0 100%)`;
+  }
 
   function calculateSavings() {
-    if (!areaInput || !thicknessSelect) return;
+    const area = parseFloat(rangeInput?.value || areaInput?.value || 1000);
 
-    const area = parseFloat(areaInput.value) || 0;
-    const thickness = parseFloat(thicknessSelect.value) || 12; // in mm
+    // Exact Image 3 math:
+    // 12mm: 20 sq.ft per 25kg bag -> 1000 sq.ft = 50 bags
+    // 10mm: 24 sq.ft per 25kg bag
+    // 8mm: 30 sq.ft per 25kg bag
+    // 15mm: 16 sq.ft per 25kg bag
+    let sqFtPerBag = 20;
+    if (selectedThickness === 8) sqFtPerBag = 30;
+    else if (selectedThickness === 10) sqFtPerBag = 24;
+    else if (selectedThickness === 12) sqFtPerBag = 20;
+    else if (selectedThickness === 15) sqFtPerBag = 16;
 
-    // Formula:
-    // Approx 1.2 kg of SV PLAST per sq.m per mm thickness
-    // 1 sq.m = 10.764 sq.ft
-    const areaSqM = area / 10.764;
-    const totalKg = areaSqM * thickness * 1.2;
-    const bags = Math.ceil(totalKg / 25);
-
-    // Traditional cement plaster requires 10-14 days of water curing (approx 2.5L per sqft per day curing = ~3-4L per sqft total)
-    const waterSaved = Math.round(area * 3.2);
-
-    // Timeline saved: zero curing wait + no putty coats = 12-16 days faster
-    const daysSaved = Math.max(5, Math.round(7 + (area / 300)));
-
-    // Cost saving: eliminates sand procurement, washing, cement waste, and separate putty coats (estimated ₹12 to ₹18 per sq ft saved)
-    const costSaved = Math.round(area * 14.5);
+    const bags = Math.ceil(area / sqFtPerBag);
+    const waterSaved = Math.round(area * 15);
 
     if (outBags) outBags.textContent = bags.toLocaleString();
-    if (outWater) outWater.textContent = `${waterSaved.toLocaleString()} Liters`;
-    if (outDays) outDays.textContent = `${daysSaved} Days`;
-    if (outCost) outCost.textContent = `₹${costSaved.toLocaleString()}`;
+    if (outWater) outWater.textContent = waterSaved.toLocaleString();
+    if (subBagNote) subBagNote.textContent = `25 Kg Bags at ${selectedThickness}mm`;
+
+    const btnBagsCount = document.getElementById('btn-calc-bags-count');
+    if (btnBagsCount) btnBagsCount.textContent = bags.toLocaleString();
+
+    if (rangeInput) updateSliderFill(rangeInput);
   }
 
-  if (areaInput && rangeInput) {
-    areaInput.addEventListener('input', () => {
-      rangeInput.value = areaInput.value;
-      calculateSavings();
-    });
+  if (rangeInput) {
     rangeInput.addEventListener('input', () => {
-      areaInput.value = rangeInput.value;
+      if (areaInput) areaInput.value = rangeInput.value;
+      const areaText = document.getElementById('calc-area-val');
+      if (areaText) areaText.textContent = `${rangeInput.value} Sq. Ft.`;
       calculateSavings();
     });
   }
 
-  if (thicknessSelect) {
-    thicknessSelect.addEventListener('change', calculateSavings);
+  if (areaInput) {
+    areaInput.addEventListener('input', () => {
+      if (rangeInput) rangeInput.value = areaInput.value;
+      const areaText = document.getElementById('calc-area-val');
+      if (areaText) areaText.textContent = `${areaInput.value} Sq. Ft.`;
+      calculateSavings();
+    });
   }
+
+  thicknessPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      thicknessPills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      selectedThickness = parseInt(pill.getAttribute('data-value') || '12', 10);
+      calculateSavings();
+    });
+  });
+
   calculateSavings();
 
   // ==========================================
@@ -451,6 +564,18 @@ document.addEventListener('DOMContentLoaded', () => {
   lightboxModal?.addEventListener('click', (e) => {
     if (e.target === lightboxModal) {
       lightboxModal.classList.remove('active');
+    }
+  });
+
+  // Close active modals on Escape key
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (lightboxModal?.classList.contains('active')) {
+        lightboxModal.classList.remove('active');
+      }
+      if (brochureModal?.classList.contains('active')) {
+        brochureModal.classList.remove('active');
+      }
     }
   });
 

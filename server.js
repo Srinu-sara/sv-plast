@@ -79,14 +79,13 @@ function extractYouTubeId(url) {
 // API ROUTES
 // ==========================================
 
-// 1. GET /api/media - Fetch current items for 3 sections (Max 5 each)
+// 1. GET /api/media - Fetch current items for 3 sections (Unlimited)
 app.get('/api/media', (req, res) => {
   const data = getMediaData();
-  // Ensure array bounds strictly max 5 each
   const responseData = {
-    instagram: (data.instagram || []).slice(0, 5),
-    youtube: (data.youtube || []).slice(0, 5),
-    gallery: (data.gallery || []).slice(0, 5)
+    instagram: data.instagram || [],
+    youtube: data.youtube || [],
+    gallery: data.gallery || []
   };
   res.json({ success: true, data: responseData });
 });
@@ -156,20 +155,18 @@ app.post('/api/media/add', upload.single('photo'), (req, res) => {
     if (!currentData[section]) {
       currentData[section] = [];
     }
-    // Prepend new item to top
+    // Prepend new item to top (Unlimited upload storage)
     currentData[section].unshift(newItem);
-    // STRICTOR RULE: Keep max 5 items per section
-    currentData[section] = currentData[section].slice(0, 5);
 
     saveMediaData(currentData);
     return res.json({
       success: true,
-      message: `Successfully added to ${section}! (Showing 5 latest items)`,
+      message: `Successfully added to ${section}!`,
       item: newItem,
       data: {
-        instagram: currentData.instagram.slice(0, 5),
-        youtube: currentData.youtube.slice(0, 5),
-        gallery: currentData.gallery.slice(0, 5)
+        instagram: currentData.instagram || [],
+        youtube: currentData.youtube || [],
+        gallery: currentData.gallery || []
       }
     });
   }
@@ -194,9 +191,9 @@ app.delete('/api/media/delete', (req, res) => {
     success: true,
     message: 'Item deleted successfully.',
     data: {
-      instagram: currentData.instagram.slice(0, 5),
-      youtube: currentData.youtube.slice(0, 5),
-      gallery: currentData.gallery.slice(0, 5)
+      instagram: currentData.instagram || [],
+      youtube: currentData.youtube || [],
+      gallery: currentData.gallery || []
     }
   });
 });

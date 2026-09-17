@@ -2,7 +2,7 @@
   "name": "svplast",
   "version": "1.0.0",
   "private": true,
-  "description": "SV PLAST - Ultra-Fine Iranian Gypsum Plaster Official Website",
+  "description": "SV PLAST - Ultra-Fine Gypsum Plaster Official Website",
   "scripts": {
     "dev": "node server.js",
     "start": "node server.js",
@@ -18,7 +18,6 @@
     "gypsum",
     "plaster",
     "svplast",
-    "iranian-gypsum",
     "construction"
   ],
   "author": "SV PLAST",

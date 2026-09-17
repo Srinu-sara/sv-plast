@@ -1,6 +1,6 @@
 # SV PLAST — Official Website
 
-High-performance, production-grade website for **SV PLAST (Ultra-Fine 200-Mesh Iranian Gypsum Plaster)**.
+High-performance, production-grade website for **SV PLAST (Ultra-Fine 200-Mesh Gypsum Plaster)**.
 
 ---
 

@@ -49,9 +49,14 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       if (data) {
-        renderInstagramSection((data.instagram || []).slice(0, 5));
-        renderYouTubeSection((data.youtube || []).slice(0, 5));
-        renderGallerySection((data.gallery || []).slice(0, 5));
+        renderGallerySection(data.gallery || []);
+        renderYouTubeSection(data.youtube || []);
+        renderInstagramSection(data.instagram || []);
+
+        // Auto-scroll all three media sections smoothly
+        initAutoScroll('photo-gallery-grid', 3600);
+        initAutoScroll('youtube-videos-grid', 4200);
+        initAutoScroll('insta-videos-grid', 4800);
       }
     } catch (e) {
       console.error('Failed to load media sections:', e);
@@ -194,6 +199,90 @@ document.addEventListener('DOMContentLoaded', function() {
       lightboxModal.style.display = 'flex';
     }
   };
+
+  // Attach horizontal slider control buttons listeners
+  document.querySelectorAll('.slide-next-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-target');
+      const container = document.getElementById(targetId);
+      if (container) {
+        const cardWidth = container.firstElementChild?.offsetWidth || 320;
+        container.scrollBy({ left: cardWidth + 24, behavior: 'smooth' });
+      }
+    });
+  });
+
+  document.querySelectorAll('.slide-prev-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-target');
+      const container = document.getElementById(targetId);
+      if (container) {
+        const cardWidth = container.firstElementChild?.offsetWidth || 320;
+        container.scrollBy({ left: -(cardWidth + 24), behavior: 'smooth' });
+      }
+    });
+  });
+
+  // Auto-scroll controller for media sections with loop and hover pause
+  function initAutoScroll(gridId, intervalMs = 3500) {
+    const container = document.getElementById(gridId);
+    if (!container) return;
+
+    let timer = null;
+    let isPaused = false;
+
+    function step() {
+      if (isPaused || !container.children.length) return;
+      const card = container.firstElementChild;
+      const scrollStep = card ? (card.offsetWidth + 24) : 340;
+      const maxScroll = container.scrollWidth - container.clientWidth;
+
+      if (container.scrollLeft >= maxScroll - 20) {
+        container.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        container.scrollBy({ left: scrollStep, behavior: 'smooth' });
+      }
+    }
+
+    function startTimer() {
+      stopTimer();
+      timer = setInterval(step, intervalMs);
+    }
+
+    function stopTimer() {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    }
+
+    // Hover / Touch interaction pauses auto-scroll to respect user focus
+    container.addEventListener('mouseenter', () => {
+      isPaused = true;
+      stopTimer();
+    });
+    container.addEventListener('mouseleave', () => {
+      isPaused = false;
+      startTimer();
+    });
+    container.addEventListener('touchstart', () => {
+      isPaused = true;
+      stopTimer();
+    }, { passive: true });
+    container.addEventListener('touchend', () => {
+      isPaused = false;
+      startTimer();
+    }, { passive: true });
+
+    // Reset timer on manual slider button clicks
+    document.querySelectorAll(`button[data-target="${gridId}"]`).forEach(btn => {
+      btn.addEventListener('click', () => {
+        startTimer();
+      });
+    });
+
+    startTimer();
+  }
 
   function extractYtId(url) {
     if (!url) return '';
