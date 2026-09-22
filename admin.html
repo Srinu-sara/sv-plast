@@ -11,6 +11,10 @@
   <title>SV PLAST | Admin Content &amp; Media Studio</title>
   <link rel="icon" type="image/png" href="images/svplast_logo.png">
   <link rel="stylesheet" href="css/style.css">
+  <!-- Centralized Cloud Database (Firebase Firestore) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
   <style>
     :root {
       --bg-dark: #070b0e;
@@ -945,6 +949,40 @@
     </div>
   </div>
 
+  <!-- Centralized Cloud Hub Settings Modal -->
+  <div class="pin-overlay" id="cloud-modal-overlay" style="display: none;">
+    <div class="pin-box" style="max-width: 480px; text-align: left;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+        <h3 style="margin: 0; font-size: 1.25rem; color: #fff; display: flex; align-items: center; gap: 0.5rem;">
+          <span>☁️</span> Centralized Cloud Hub
+        </h3>
+        <button type="button" id="close-cloud-modal-btn" style="background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer;">&times;</button>
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.82rem; line-height: 1.5; margin-bottom: 1rem;">
+        Powered by Google Firebase Firestore (100% Free). When connected, posts and deletions sync instantly across all devices, Chrome profiles, and visitors.
+      </p>
+
+      <div class="form-group" style="margin-bottom: 0.75rem;">
+        <label class="form-label"><span>Paste Firebase Configuration (JSON or JS snippet)</span></label>
+        <textarea id="firebase-paste-area" class="form-input" rows="5" placeholder='const firebaseConfig = {
+  apiKey: "AIza...",
+  authDomain: "sv-plast.firebaseapp.com",
+  projectId: "sv-plast",
+  storageBucket: "sv-plast.appspot.com",
+  messagingSenderId: "...",
+  appId: "..."
+};' style="font-family: monospace; font-size: 0.75rem; line-height: 1.4;"></textarea>
+      </div>
+
+      <div style="display: flex; gap: 0.65rem; margin-top: 1rem;">
+        <button type="button" id="save-cloud-config-btn" class="btn-send" style="padding: 0.75rem; font-size: 0.9rem;">
+          💾 Connect &amp; Save
+        </button>
+      </div>
+      <div id="cloud-status-msg" style="font-size: 0.8rem; margin-top: 0.75rem; color: #4ade80; display: none;"></div>
+    </div>
+  </div>
+
   <!-- Main Sticky Header -->
   <header class="admin-header">
     <div class="admin-nav">
@@ -956,10 +994,11 @@
         </div>
       </a>
       <div class="header-actions">
-        <span class="status-dot">
-          <span class="status-dot-pulse"></span>
-          <span>Live</span>
-        </span>
+        <button type="button" class="btn-site-link" id="btn-cloud-status" title="Centralized Cloud Sync Settings"
+          style="cursor: pointer; display: flex; align-items: center; gap: 0.35rem;">
+          <span id="cloud-dot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #fbbf24;"></span>
+          <span id="cloud-status-text">Cloud Sync</span>
+        </button>
         <button type="button" class="btn-site-link" id="btn-lock-admin" title="Lock Admin Studio"
           style="cursor: pointer;">🔒 Lock</button>
         <a href="index.html" class="btn-site-link">← Website</a>
@@ -1332,14 +1371,72 @@
       const senderForm = document.getElementById('sender-form');
       const submitBtn = document.getElementById('submit-btn');
 
+      // Helper to extract YouTube Video ID
+      function extractYouTubeId(url) {
+        if (!url) return '';
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|shorts\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? match[2] : '';
+      }
+
       senderForm.addEventListener('submit', async function (e) {
         e.preventDefault();
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span>⏳</span> Publishing to SV PLAST...';
 
-        const formData = new FormData(senderForm);
+        const sec = sectionInput.value || 'instagram';
+        const title = (document.getElementById('item-title').value || '').trim();
+        const url = (document.getElementById('item-url').value || '').trim();
+        const locationVal = (document.getElementById('item-location').value || '').trim();
+
+        // Read attached photo as Base64 Data URL if uploaded
+        let imageUrl = '';
+        if (fileInput.files && fileInput.files[0]) {
+          try {
+            imageUrl = await new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve(reader.result);
+              reader.onerror = reject;
+              reader.readAsDataURL(fileInput.files[0]);
+            });
+          } catch (err) {
+            console.error('Error reading image file:', err);
+          }
+        }
+
+        let videoId = '';
+        if (sec === 'youtube') {
+          videoId = extractYouTubeId(url);
+          if (!imageUrl && videoId) {
+            imageUrl = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+          }
+        }
+
+        const newItem = {
+          id: sec + '_' + Date.now(),
+          title: title || 'SV PLAST Media Update',
+          url: url || '#',
+          imageUrl: imageUrl || (sec === 'gallery' ? 'images/work_curved_ceiling.webp' : 'images/finished_gypsum_wall.webp'),
+          videoId: videoId,
+          location: locationVal,
+          date: new Date().toISOString().split('T')[0]
+        };
 
         try {
+          if (window.SVCloud && window.SVCloud.isConfigured()) {
+            const result = await window.SVCloud.addItem(sec, newItem);
+            if (result.success) {
+              showToast('✅ Published to Centralized Cloud Hub!', true);
+              senderForm.reset();
+              previewBox.style.display = 'none';
+              fetchLiveItems();
+              setTimeout(() => { btnViewManage?.click(); }, 800);
+              return;
+            }
+          }
+
+          // Fallback: try local server API if running local Node server
+          const formData = new FormData(senderForm);
           const response = await fetch('/api/media/add', {
             method: 'POST',
             body: formData
@@ -1351,16 +1448,13 @@
             senderForm.reset();
             previewBox.style.display = 'none';
             fetchLiveItems();
-            // Automatically switch to Manage view to show user the newly added post
-            setTimeout(() => {
-              btnViewManage?.click();
-            }, 800);
+            setTimeout(() => { btnViewManage?.click(); }, 800);
           } else {
-            showToast(result.message || 'Failed to send item.', false);
+            showToast(result.message || 'Please connect Cloud Hub to publish.', false);
           }
         } catch (err) {
           console.error(err);
-          showToast('Notice: Sent to app. Please verify server connection.', false);
+          showToast('Notice: Please connect Cloud Hub to sync across all devices.', false);
         } finally {
           submitBtn.disabled = false;
           submitBtn.innerHTML = '<span>📤</span> Publish to SV PLAST';
@@ -1368,7 +1462,7 @@
       });
 
       // -------------------------------------------------------------
-      // 8. Manage Live Items & Mobile-Friendly Delete System
+      // 8. Manage Live Items & Real-Time Cloud Deletion System
       // -------------------------------------------------------------
       const manageList = document.getElementById('manage-list');
       const totalLiveBadge = document.getElementById('total-live-badge');
@@ -1378,27 +1472,83 @@
       const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
       const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
 
+      // Cloud Hub Modal Elements
+      const cloudModal = document.getElementById('cloud-modal-overlay');
+      const btnCloudStatus = document.getElementById('btn-cloud-status');
+      const closeCloudModalBtn = document.getElementById('close-cloud-modal-btn');
+      const saveCloudConfigBtn = document.getElementById('save-cloud-config-btn');
+      const firebasePasteArea = document.getElementById('firebase-paste-area');
+      const cloudStatusMsg = document.getElementById('cloud-status-msg');
+      const cloudDot = document.getElementById('cloud-dot');
+      const cloudStatusText = document.getElementById('cloud-status-text');
+
       let currentRawData = { instagram: [], youtube: [], gallery: [] };
       let activeFilter = 'all';
       let itemToDelete = null;
 
-      function getDeletedIds() {
-        try {
-          return JSON.parse(localStorage.getItem('sv_deleted_media_ids') || '[]');
-        } catch (e) {
-          return [];
-        }
+      function updateCloudStatusUI() {
+        const isReady = window.SVCloud && window.SVCloud.isConfigured();
+        if (cloudDot) cloudDot.style.background = isReady ? '#10b981' : '#fbbf24';
+        if (cloudStatusText) cloudStatusText.textContent = isReady ? 'Cloud Active' : 'Setup Cloud';
       }
 
-      function addDeletedId(id) {
+      btnCloudStatus?.addEventListener('click', () => {
+        cloudModal.style.display = 'flex';
         try {
-          const ids = getDeletedIds();
-          if (!ids.includes(id)) {
-            ids.push(id);
-            localStorage.setItem('sv_deleted_media_ids', JSON.stringify(ids));
+          const current = localStorage.getItem('sv_firebase_config');
+          if (current && firebasePasteArea) {
+            firebasePasteArea.value = JSON.stringify(JSON.parse(current), null, 2);
           }
-        } catch (e) { }
-      }
+        } catch (e) {}
+      });
+
+      closeCloudModalBtn?.addEventListener('click', () => {
+        cloudModal.style.display = 'none';
+      });
+
+      cloudModal?.addEventListener('click', (e) => {
+        if (e.target === cloudModal) cloudModal.style.display = 'none';
+      });
+
+      saveCloudConfigBtn?.addEventListener('click', () => {
+        const raw = (firebasePasteArea?.value || '').trim();
+        if (!raw) return;
+
+        let parsed = null;
+        try {
+          // Attempt JSON parse
+          parsed = JSON.parse(raw);
+        } catch (e) {
+          // Attempt regex extraction from JS object snippet
+          try {
+            const extract = (key) => {
+              const match = raw.match(new RegExp(`${key}\\s*:\\s*["']([^"']+)["']`));
+              return match ? match[1] : '';
+            };
+            parsed = {
+              apiKey: extract('apiKey'),
+              authDomain: extract('authDomain'),
+              projectId: extract('projectId'),
+              storageBucket: extract('storageBucket'),
+              messagingSenderId: extract('messagingSenderId'),
+              appId: extract('appId')
+            };
+          } catch (err) {}
+        }
+
+        if (parsed && parsed.projectId && parsed.apiKey) {
+          if (window.SVCloud) {
+            window.SVCloud.saveConfig(parsed);
+          }
+          if (cloudStatusMsg) {
+            cloudStatusMsg.style.display = 'block';
+            cloudStatusMsg.textContent = '✅ Cloud Hub Connected! Refreshing...';
+          }
+          setTimeout(() => { location.reload(); }, 600);
+        } else {
+          alert('Could not find valid apiKey and projectId in your Firebase configuration. Please check your snippet.');
+        }
+      });
 
       // Filter chips handling
       const filterChips = document.querySelectorAll('.filter-chip');
@@ -1447,57 +1597,52 @@
         confirmDeleteBtn.innerHTML = '<span>⏳</span> Deleting...';
 
         try {
-          const deleteUrl = `/api/media/delete?section=${encodeURIComponent(sec)}&id=${encodeURIComponent(id)}`;
+          // Centralized Cloud Deletion: permanent and immediate across all profiles
+          if (window.SVCloud && window.SVCloud.isConfigured()) {
+            const res = await window.SVCloud.deleteItem(sec, id);
+            if (res.success) {
+              deleteModal.style.display = 'none';
+              showToast('🗑️ Deleted permanently across all devices!', true);
+              fetchLiveItems();
+              return;
+            }
+          }
 
-          // Try POST first (safest for mobile cellular networks & firewalls), then DELETE
+          // Fallback to local server API if running local Node server
+          const deleteUrl = `/api/media/delete?section=${encodeURIComponent(sec)}&id=${encodeURIComponent(id)}`;
           let res = await fetch(deleteUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ section: sec, id: id })
           });
 
-          if (!res.ok) {
-            res = await fetch(deleteUrl, {
-              method: 'DELETE',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ section: sec, id: id })
-            });
-          }
-
-          // Always record locally so item vanishes instantly on mobile device
-          addDeletedId(id);
-
           deleteModal.style.display = 'none';
-          showToast('✅ Item deleted successfully.', true);
-
-          // Animate card removal in DOM immediately
-          const cardEl = document.querySelector(`[data-card-id="${id}"]`);
-          if (cardEl) {
-            cardEl.style.transition = 'all 0.3s ease';
-            cardEl.style.opacity = '0';
-            cardEl.style.transform = 'scale(0.92)';
-            setTimeout(() => {
-              cardEl.remove();
-              fetchLiveItems();
-            }, 280);
-          } else {
-            fetchLiveItems();
-          }
-        } catch (err) {
-          console.error('Delete notice:', err);
-          addDeletedId(id);
-          deleteModal.style.display = 'none';
-          showToast('✅ Item deleted.', true);
+          showToast('✅ Item deleted from server.', true);
           fetchLiveItems();
+        } catch (err) {
+          console.error('Delete error:', err);
+          showToast('Notice: Please connect Cloud Hub for multi-device deletion.', false);
         } finally {
           confirmDeleteBtn.disabled = false;
           confirmDeleteBtn.innerHTML = 'Yes, Delete';
           itemToDelete = null;
+          fetchLiveItems();
         }
       });
 
       async function fetchLiveItems() {
         try {
+          updateCloudStatusUI();
+
+          if (window.SVCloud) {
+            const cloudData = await window.SVCloud.getMedia();
+            if (cloudData) {
+              currentRawData = cloudData;
+              renderManageItems(currentRawData);
+              return;
+            }
+          }
+
           const res = await fetch('/api/media');
           const resData = await res.json();
           if (resData.success && resData.data) {
@@ -1506,9 +1651,8 @@
             return;
           }
         } catch (e) {
-          // Fallback to static json file
           try {
-            const resStatic = await fetch('data/media.json');
+            const resStatic = await fetch('data/media.json?t=' + Date.now());
             currentRawData = await resStatic.json();
             renderManageItems(currentRawData);
             return;
@@ -1521,15 +1665,14 @@
       function renderManageItems(data) {
         let html = '';
         const sections = ['instagram', 'youtube', 'gallery'];
-        const deletedIds = getDeletedIds();
 
         let totalValidCount = 0;
         const counts = { instagram: 0, youtube: 0, gallery: 0 };
 
         sections.forEach(sec => {
-          const validItems = (data[sec] || []).filter(item => !deletedIds.includes(item.id));
-          counts[sec] = validItems.length;
-          totalValidCount += validItems.length;
+          const items = data[sec] || [];
+          counts[sec] = items.length;
+          totalValidCount += items.length;
         });
 
         if (totalLiveBadge) {
@@ -1539,8 +1682,7 @@
         const sectionsToDisplay = activeFilter === 'all' ? sections : [activeFilter];
 
         sectionsToDisplay.forEach(sec => {
-          const allItems = data[sec] || [];
-          const items = allItems.filter(item => !deletedIds.includes(item.id));
+          const items = data[sec] || [];
           const secTitle = sec.toUpperCase();
           const icon = sec === 'instagram' ? '📸' : (sec === 'youtube' ? '🎥' : '🖼️');
           const tagClass = sec === 'instagram' ? 'tag-insta' : (sec === 'youtube' ? 'tag-youtube' : 'tag-gallery');
@@ -1585,8 +1727,17 @@
         manageList.innerHTML = html;
       }
 
-      // Initial load
+      // Initial load and real-time subscription
       fetchLiveItems();
+      if (window.SVCloud) {
+        window.SVCloud.subscribe((cloudData) => {
+          if (cloudData) {
+            currentRawData = cloudData;
+            renderManageItems(currentRawData);
+            updateCloudStatusUI();
+          }
+        });
+      }
     });
   </script>
 </body>

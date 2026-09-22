@@ -26,43 +26,42 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Load Media Data
+  // Load Media Data from Centralized Cloud Hub
   fetchMediaData();
 
   async function fetchMediaData() {
     try {
-      // Try API first, fallback to static json file
       let data = null;
-      try {
-        const res = await fetch('/api/media');
-        const json = await res.json();
-        if (json && json.success && json.data) {
-          data = json.data;
-        }
-      } catch (err) {
-        console.warn('API fetch failed, falling back to data/media.json file:', err);
+
+      if (window.SVCloud) {
+        data = await window.SVCloud.getMedia();
+        // Subscribe to real-time changes from any device / Chrome profile
+        window.SVCloud.subscribe((realtimeData) => {
+          if (realtimeData) {
+            renderAllMedia(realtimeData);
+          }
+        });
       }
 
       if (!data) {
-        const resFile = await fetch('data/media.json');
+        try {
+          const res = await fetch('/api/media');
+          const json = await res.json();
+          if (json && json.success && json.data) {
+            data = json.data;
+          }
+        } catch (err) {
+          console.warn('API fetch fallback:', err);
+        }
+      }
+
+      if (!data) {
+        const resFile = await fetch('data/media.json?t=' + Date.now());
         data = await resFile.json();
       }
 
-      function filterDeleted(items) {
-        if (!Array.isArray(items)) return [];
-        try {
-          const deletedIds = JSON.parse(localStorage.getItem('sv_deleted_media_ids') || '[]');
-          if (Array.isArray(deletedIds) && deletedIds.length > 0) {
-            return items.filter(item => !deletedIds.includes(item.id));
-          }
-        } catch (e) {}
-        return items;
-      }
-
       if (data) {
-        renderGallerySection(filterDeleted(data.gallery || []));
-        renderYouTubeSection(filterDeleted(data.youtube || []));
-        renderInstagramSection(filterDeleted(data.instagram || []));
+        renderAllMedia(data);
 
         // Auto-scroll all three media sections smoothly
         initAutoScroll('photo-gallery-grid', 3600);
@@ -72,6 +71,12 @@ document.addEventListener('DOMContentLoaded', function() {
     } catch (e) {
       console.error('Failed to load media sections:', e);
     }
+  }
+
+  function renderAllMedia(data) {
+    renderGallerySection(data.gallery || []);
+    renderYouTubeSection(data.youtube || []);
+    renderInstagramSection(data.instagram || []);
   }
 
   // 1. Render Instagram Section (Max 5 items) - Rich Card with Thumbnail (Just like YouTube!)
