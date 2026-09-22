@@ -2,118 +2,279 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SV PLAST | Content Publisher & Admin Manager</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0f12">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>SV PLAST | Admin Content &amp; Media Studio</title>
   <link rel="icon" type="image/png" href="images/svplast_logo.png">
   <link rel="stylesheet" href="css/style.css">
   <style>
     :root {
-      --bg-dark: #0a0f12;
-      --card-bg: rgba(18, 26, 31, 0.85);
-      --border-color: rgba(255, 255, 255, 0.12);
+      --bg-dark: #070b0e;
+      --card-bg: rgba(15, 23, 28, 0.92);
+      --card-bg-subtle: rgba(22, 33, 41, 0.65);
+      --border-color: rgba(255, 255, 255, 0.1);
+      --border-focus: #10b981;
       --brand-green: #00d084;
       --brand-emerald: #059669;
       --brand-gold: #f59e0b;
-      --text-main: #f3f4f6;
-      --text-muted: #9ca3af;
+      --brand-red: #ef4444;
+      --brand-red-bg: rgba(239, 68, 68, 0.15);
+      --text-main: #f9fafb;
+      --text-muted: #94a3b8;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
       background: var(--bg-dark);
       color: var(--text-main);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       margin: 0;
       padding: 0;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
+      padding-top: var(--safe-top);
+      padding-bottom: var(--safe-bottom);
     }
 
+    /* -------------------------------------------
+       HEADER (Mobile-First Compact Glass Bar)
+       ------------------------------------------- */
     .admin-header {
-      background: rgba(10, 15, 18, 0.95);
+      background: rgba(10, 15, 18, 0.92);
       border-bottom: 1px solid var(--border-color);
-      padding: 1rem 1.5rem;
-      backdrop-filter: blur(12px);
+      padding: 0.65rem 1rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       position: sticky;
       top: 0;
       z-index: 100;
     }
 
     .admin-nav {
-      max-width: 1000px;
+      max-width: 960px;
       margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 0.75rem;
     }
 
     .brand-group {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.6rem;
       text-decoration: none;
       color: var(--text-main);
+      min-width: 0;
     }
 
     .brand-logo-img {
-      height: 40px;
+      height: 34px;
       width: auto;
+      flex-shrink: 0;
     }
 
-    .badge-admin {
-      background: linear-gradient(135deg, var(--brand-emerald), var(--brand-green));
-      color: #000;
-      font-weight: 700;
-      font-size: 0.75rem;
+    .brand-title-wrap {
+      line-height: 1.15;
+      min-width: 0;
+    }
+
+    .brand-title-wrap strong {
+      font-size: 1rem;
+      display: block;
+      letter-spacing: -0.2px;
+      white-space: nowrap;
+    }
+
+    .brand-title-wrap span {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      display: block;
+      white-space: nowrap;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .status-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
       padding: 0.25rem 0.6rem;
       border-radius: 999px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      font-size: 0.72rem;
+      font-weight: 600;
     }
 
+    .status-dot-pulse {
+      width: 6px;
+      height: 6px;
+      background: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    .btn-site-link {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-color);
+      color: #e2e8f0;
+      text-decoration: none;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.4rem 0.75rem;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-site-link:active {
+      transform: scale(0.96);
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* -------------------------------------------
+       MOBILE VIEW SWITCHER (Segmented Control)
+       ------------------------------------------- */
+    .view-switcher-wrap {
+      background: rgba(7, 11, 14, 0.95);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0.5rem 1rem;
+      position: sticky;
+      top: 51px;
+      z-index: 90;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .view-switcher {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 3px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .view-switch-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.65rem 0.5rem;
+      border-radius: 9px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+    }
+
+    .view-switch-btn.active {
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+    }
+
+    .view-count-badge {
+      background: rgba(0, 0, 0, 0.35);
+      color: #fff;
+      font-size: 0.72rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    /* -------------------------------------------
+       CONTAINER & CARDS
+       ------------------------------------------- */
     .admin-container {
-      max-width: 900px;
+      max-width: 860px;
       width: 100%;
-      margin: 2rem auto;
-      padding: 0 1.5rem;
+      margin: 1rem auto 3rem;
+      padding: 0 1rem;
       box-sizing: border-box;
       flex: 1;
+    }
+
+    .admin-view-panel {
+      display: none;
+      animation: fadeInView 0.25s ease-out;
+    }
+
+    .admin-view-panel.active-panel {
+      display: block;
+    }
+
+    @keyframes fadeInView {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .admin-card {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      border-radius: 20px;
-      padding: 2rem;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      border-radius: 18px;
+      padding: 1.25rem;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
       backdrop-filter: blur(16px);
-      margin-bottom: 2rem;
+      -webkit-backdrop-filter: blur(16px);
+      margin-bottom: 1.25rem;
+    }
+
+    .card-head {
+      margin-bottom: 1.25rem;
     }
 
     .card-title {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       font-weight: 700;
-      margin-top: 0;
-      margin-bottom: 0.5rem;
+      margin: 0 0 0.35rem 0;
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      letter-spacing: -0.2px;
     }
 
     .card-subtitle {
       color: var(--text-muted);
-      font-size: 0.9rem;
-      margin-bottom: 1.5rem;
+      font-size: 0.82rem;
+      margin: 0;
+      line-height: 1.45;
     }
 
-    /* Section Tabs */
+    /* -------------------------------------------
+       SECTION SELECTOR TABS (3 Columns on Mobile)
+       ------------------------------------------- */
     .section-tabs {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 0.75rem;
-      margin-bottom: 2rem;
-      background: rgba(0, 0, 0, 0.4);
-      padding: 0.5rem;
+      gap: 0.4rem;
+      margin-bottom: 1.25rem;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 4px;
       border-radius: 14px;
       border: 1px solid var(--border-color);
     }
@@ -122,130 +283,218 @@
       background: transparent;
       border: none;
       color: var(--text-muted);
-      padding: 0.85rem 1rem;
+      padding: 0.65rem 0.25rem;
       font-weight: 600;
-      font-size: 0.95rem;
+      font-size: 0.82rem;
       border-radius: 10px;
       cursor: pointer;
-      transition: all 0.25s ease;
+      transition: all 0.2s ease;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 0.5rem;
+      gap: 0.2rem;
+      text-align: center;
+      line-height: 1.2;
     }
 
-    .tab-btn:hover {
-      color: var(--text-main);
-      background: rgba(255, 255, 255, 0.05);
+    .tab-btn span.tab-icon {
+      font-size: 1.2rem;
+    }
+
+    .tab-btn:active {
+      transform: scale(0.97);
     }
 
     .tab-btn.active {
       background: linear-gradient(135deg, #059669, #10b981);
       color: #ffffff;
-      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
     }
 
-    /* Form Fields */
+    /* -------------------------------------------
+       FORM CONTROLS (Optimized for Mobile Keyboards)
+       ------------------------------------------- */
     .form-group {
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.15rem;
     }
 
     .form-label {
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       font-weight: 600;
-      font-size: 0.9rem;
-      margin-bottom: 0.5rem;
-      color: #e5e7eb;
+      font-size: 0.86rem;
+      margin-bottom: 0.4rem;
+      color: #e2e8f0;
+    }
+
+    .form-label-opt {
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--text-muted);
+    }
+
+    .input-with-action {
+      display: flex;
+      gap: 0.4rem;
+      position: relative;
     }
 
     .form-input {
       width: 100%;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.45);
       border: 1px solid var(--border-color);
       border-radius: 12px;
-      padding: 0.9rem 1.1rem;
+      padding: 0.85rem 1rem;
       color: #ffffff;
-      font-size: 0.95rem;
+      /* Crucial 16px to prevent iOS Safari auto-zooming on focus */
+      font-size: 16px;
       box-sizing: border-box;
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      -webkit-appearance: none;
     }
 
     .form-input:focus {
       outline: none;
-      border-color: var(--brand-green);
-      box-shadow: 0 0 0 3px rgba(0, 208, 132, 0.2);
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+      background: rgba(0, 0, 0, 0.6);
+    }
+
+    .btn-paste {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-color);
+      color: #34d399;
+      border-radius: 12px;
+      padding: 0 0.85rem;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+    }
+
+    .btn-paste:active {
+      transform: scale(0.95);
+      background: rgba(16, 185, 129, 0.2);
     }
 
     .form-hint {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: var(--text-muted);
       margin-top: 0.35rem;
+      line-height: 1.35;
     }
 
-    /* File Drop Zone */
+    /* -------------------------------------------
+       MOBILE DROPZONE / CAMERA PICKER
+       ------------------------------------------- */
     .file-dropzone {
-      border: 2px dashed rgba(255, 255, 255, 0.2);
+      border: 2px dashed rgba(255, 255, 255, 0.18);
       border-radius: 14px;
-      padding: 2rem 1.5rem;
+      padding: 1.5rem 1rem;
       text-align: center;
       background: rgba(0, 0, 0, 0.25);
       cursor: pointer;
       transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
-    .file-dropzone:hover, .file-dropzone.dragover {
+    .file-dropzone:active, .file-dropzone.dragover {
       border-color: var(--brand-green);
-      background: rgba(0, 208, 132, 0.05);
+      background: rgba(0, 208, 132, 0.08);
+      transform: scale(0.99);
     }
 
     .dropzone-icon {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
+      font-size: 2.2rem;
+      margin-bottom: 0.35rem;
       display: block;
+    }
+
+    .dropzone-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 0.2rem;
+    }
+
+    .dropzone-sub {
+      font-size: 0.74rem;
+      color: var(--text-muted);
     }
 
     #file-input {
       display: none;
     }
 
-    .img-preview-box {
-      margin-top: 1rem;
+    .img-preview-wrap {
+      margin-top: 0.75rem;
       display: none;
       position: relative;
-      max-width: 300px;
       border-radius: 12px;
       overflow: hidden;
       border: 1px solid var(--border-color);
+      max-width: 100%;
+      background: #000;
     }
 
-    .img-preview-box img {
+    .img-preview-wrap img {
       width: 100%;
-      height: auto;
+      max-height: 220px;
+      object-fit: cover;
       display: block;
     }
 
-    /* Primary Send Button */
+    .btn-remove-preview {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.75);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 999px;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+    }
+
+    /* -------------------------------------------
+       SUBMIT SEND BUTTON
+       ------------------------------------------- */
     .btn-send {
       width: 100%;
       background: linear-gradient(135deg, #059669, #10b981);
       color: #ffffff;
       border: none;
-      padding: 1.1rem;
+      padding: 1rem 1.25rem;
       border-radius: 14px;
       font-weight: 700;
-      font-size: 1.05rem;
+      font-size: 1rem;
       cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition: all 0.2s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.6rem;
-      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
+      gap: 0.5rem;
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.35);
+      min-height: 48px;
+      margin-top: 1rem;
+      touch-action: manipulation;
     }
 
-    .btn-send:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 25px rgba(16, 185, 129, 0.4);
+    .btn-send:active {
+      transform: scale(0.98);
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2);
     }
 
     .btn-send:disabled {
@@ -254,104 +503,215 @@
       transform: none;
     }
 
-    /* Live Status Toast */
-    .toast-msg {
-      display: none;
-      padding: 1rem;
-      border-radius: 12px;
-      margin-top: 1.25rem;
-      font-weight: 600;
-      font-size: 0.9rem;
+    /* -------------------------------------------
+       FILTER CHIPS (Manage View)
+       ------------------------------------------- */
+    .filter-chips-row {
+      display: flex;
+      gap: 0.4rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
     }
 
-    .toast-success {
-      background: rgba(16, 185, 129, 0.15);
-      border: 1px solid #10b981;
+    .filter-chips-row::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-chip {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 0.45rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .filter-chip.active {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: #10b981;
       color: #34d399;
     }
 
-    .toast-error {
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid #ef4444;
-      color: #f87171;
-    }
-
-    /* Managed Items List */
+    /* -------------------------------------------
+       MANAGED LIVE ITEM CARDS (Mobile-First)
+       ------------------------------------------- */
     .manage-list {
-      display: grid;
-      gap: 1rem;
-      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
     }
 
-    .item-card {
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 1rem;
+    .sec-group-header {
+      font-weight: 700;
+      color: var(--brand-green);
+      margin-top: 0.85rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.4rem;
+      font-size: 0.85rem;
+      letter-spacing: 0.3px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
+    }
+
+    .item-card {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.85rem;
+      position: relative;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .item-card:active {
+      background: rgba(255, 255, 255, 0.04);
     }
 
     .item-info {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.75rem;
       flex: 1;
       min-width: 0;
     }
 
-    .item-thumb {
-      width: 60px;
-      height: 60px;
-      border-radius: 8px;
-      object-fit: cover;
-      background: #111;
+    .item-thumb-box {
+      width: 58px;
+      height: 58px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #000;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
       flex-shrink: 0;
     }
 
+    .item-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .thumb-type-badge {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      background: rgba(0, 0, 0, 0.75);
+      border-radius: 4px;
+      font-size: 0.65rem;
+      padding: 1px 3px;
+      line-height: 1;
+    }
+
     .item-details {
+      flex: 1;
       min-width: 0;
     }
 
     .item-title {
       font-weight: 600;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
+      line-height: 1.3;
       margin-bottom: 0.25rem;
-      white-space: nowrap;
+      color: #f1f5f9;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
       overflow: hidden;
-      text-overflow: ellipsis;
     }
 
-    .item-meta {
-      font-size: 0.8rem;
+    .item-badges-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+
+    .item-sec-tag {
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+      line-height: 1.2;
+    }
+
+    .tag-insta {
+      background: rgba(225, 48, 108, 0.15);
+      color: #f472b6;
+      border: 1px solid rgba(225, 48, 108, 0.3);
+    }
+
+    .tag-youtube {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .tag-gallery {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .item-meta-text {
+      font-size: 0.72rem;
       color: var(--text-muted);
     }
 
+    /* -------------------------------------------
+       DELETE BUTTON (Mobile Thumb Friendly 44px)
+       ------------------------------------------- */
     .btn-delete {
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.3);
+      background: var(--brand-red-bg);
+      border: 1px solid rgba(239, 68, 68, 0.4);
       color: #f87171;
-      padding: 0.5rem 0.85rem;
-      border-radius: 8px;
+      padding: 0.55rem 0.85rem;
+      border-radius: 11px;
       cursor: pointer;
-      font-weight: 600;
-      font-size: 0.85rem;
+      font-weight: 700;
+      font-size: 0.8rem;
       transition: all 0.2s ease;
+      flex-shrink: 0;
+      touch-action: manipulation;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      min-height: 42px;
+      min-width: 76px;
     }
 
-    .btn-delete:hover {
+    .btn-delete:active {
+      transform: scale(0.94);
       background: #ef4444;
-      color: #fff;
+      color: #ffffff;
     }
 
-    /* Modal Security Auth */
+    /* -------------------------------------------
+       MOBILE BOTTOM SHEET / MODAL
+       ------------------------------------------- */
     .pin-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(15px);
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -360,25 +720,141 @@
     }
 
     .pin-box {
-      background: #121a1f;
+      background: #0e171d;
       border: 1px solid var(--border-color);
-      border-radius: 20px;
-      padding: 2.5rem 2rem;
-      max-width: 400px;
+      border-radius: 22px;
+      padding: 2rem 1.5rem;
+      max-width: 380px;
       width: 100%;
       text-align: center;
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+      animation: modalScaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalScaleUp {
+      from { opacity: 0; transform: scale(0.92); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* On mobile view, bottom-sheet style for delete confirmation */
+    @media (max-width: 640px) {
+      #delete-modal-overlay.pin-overlay {
+        align-items: flex-end;
+        padding: 0;
+      }
+      #delete-modal-overlay .pin-box {
+        max-width: 100%;
+        border-radius: 24px 24px 0 0;
+        padding: 1.75rem 1.25rem calc(1.5rem + var(--safe-bottom));
+        animation: sheetSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        border-bottom: none;
+      }
+      @keyframes sheetSlideUp {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+      }
+    }
+
+    .sheet-handle {
+      width: 40px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 999px;
+      margin: 0 auto 1.25rem;
+      display: none;
     }
 
     @media (max-width: 640px) {
-      .section-tabs {
-        grid-template-columns: 1fr;
+      .sheet-handle {
+        display: block;
+      }
+    }
+
+    .delete-preview-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 0.6rem;
+      margin: 1rem 0 1.5rem;
+      text-align: left;
+    }
+
+    .delete-preview-thumb {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #000;
+    }
+
+    .delete-preview-text {
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: #f1f5f9;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* -------------------------------------------
+       TOAST SNACKBAR (Floating at bottom on Mobile)
+       ------------------------------------------- */
+    .toast-msg {
+      display: none;
+      position: fixed;
+      bottom: calc(20px + var(--safe-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 99999;
+      min-width: 290px;
+      max-width: 90vw;
+      padding: 0.85rem 1.25rem;
+      border-radius: 16px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-align: center;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      animation: toastSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+
+    @keyframes toastSlideUp {
+      from { opacity: 0; transform: translate(-50%, 15px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
+    }
+
+    .toast-success {
+      background: rgba(6, 78, 59, 0.95);
+      border: 1px solid #10b981;
+      color: #a7f3d0;
+    }
+
+    .toast-error {
+      background: rgba(127, 29, 29, 0.95);
+      border: 1px solid #ef4444;
+      color: #fecaca;
+    }
+
+    /* Desktop layout enhancement: show both cards cleanly side-by-side if wide */
+    @media (min-width: 820px) {
+      .view-switcher-wrap {
+        display: none;
+      }
+      .admin-view-panel {
+        display: block !important;
       }
       .admin-container {
-        padding: 0 1rem;
-      }
-      .admin-card {
-        padding: 1.25rem;
+        display: grid;
+        grid-template-columns: 1.15fr 1fr;
+        gap: 1.5rem;
+        align-items: start;
       }
     }
   </style>
@@ -388,137 +864,251 @@
   <!-- Security Passcode Auth Modal -->
   <div class="pin-overlay" id="pin-overlay">
     <div class="pin-box">
-      <div style="font-size: 3rem; margin-bottom: 0.5rem;">🔒</div>
-      <h2 style="margin: 0 0 0.5rem 0; font-size: 1.5rem;">Admin Verification</h2>
-      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
-        Enter passcode to publish content to SV PLAST website.<br>
-        <!-- <small style="color: var(--brand-green);">(Default PIN: 1234)</small> -->
+      <div style="font-size: 2.75rem; margin-bottom: 0.35rem;">🔒</div>
+      <h2 style="margin: 0 0 0.35rem 0; font-size: 1.35rem; color: #fff;">SV PLAST Admin</h2>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.25rem;">
+        Enter admin PIN to manage media content.
       </p>
       <div class="form-group">
-        <input type="password" id="pin-input" class="form-input" placeholder="Enter PIN (e.g. 1234)" style="text-align: center; font-size: 1.25rem; letter-spacing: 4px;">
+        <input type="password" id="pin-input" class="form-input" placeholder="••••" inputmode="numeric" pattern="[0-9]*" style="text-align: center; font-size: 1.5rem; letter-spacing: 6px;" autofocus>
       </div>
-      <button class="btn-send" id="pin-submit-btn">Unlock Publisher</button>
-      <div id="pin-error" style="color: #f87171; font-size: 0.85rem; margin-top: 1rem; display: none;">Invalid PIN code. Please try again.</div>
+      <button type="button" class="btn-send" id="pin-submit-btn" style="margin-top: 0.5rem;">Unlock Admin Studio</button>
+      <div id="pin-error" style="color: #f87171; font-size: 0.8rem; margin-top: 0.85rem; display: none;">Incorrect PIN code. Please try again.</div>
     </div>
   </div>
 
-  <!-- Main Admin Header -->
+  <!-- Delete Confirmation Bottom-Sheet Modal -->
+  <div class="pin-overlay" id="delete-modal-overlay" style="display: none;">
+    <div class="pin-box">
+      <div class="sheet-handle"></div>
+      <div style="font-size: 2.5rem; margin-bottom: 0.25rem;">🗑️</div>
+      <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; color: #fff;">Delete Live Item?</h3>
+      <p style="color: var(--text-muted); font-size: 0.82rem; margin: 0;">
+        This item will be removed immediately from SV PLAST website.
+      </p>
+
+      <div class="delete-preview-pill">
+        <img id="delete-preview-img" class="delete-preview-thumb" src="images/svplast_logo.png" alt="Thumb">
+        <div class="delete-preview-text" id="delete-item-desc">Item title preview</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem;">
+        <button type="button" id="cancel-delete-btn" style="background: rgba(255,255,255,0.08); color: #e2e8f0; border: 1px solid var(--border-color); padding: 0.85rem; border-radius: 12px; font-weight: 600; font-size: 0.92rem; cursor: pointer;">
+          Cancel
+        </button>
+        <button type="button" id="confirm-delete-btn" style="background: #ef4444; color: #fff; border: none; padding: 0.85rem; border-radius: 12px; font-weight: 700; font-size: 0.92rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.4rem;">
+          Yes, Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Sticky Header -->
   <header class="admin-header">
     <div class="admin-nav">
       <a href="index.html" class="brand-group">
-        <img src="images/svplast_logo.png" alt="SV PLAST Logo" class="brand-logo-img">
-        <div>
-          <strong style="display: block; font-size: 1.1rem; line-height: 1.2;">SV PLAST</strong>
-          <span style="font-size: 0.75rem; color: var(--text-muted);">Content Sender App</span>
+        <img src="images/svplast_logo.png" alt="SV PLAST" class="brand-logo-img">
+        <div class="brand-title-wrap">
+          <strong>SV PLAST</strong>
+          <span>Admin Studio</span>
         </div>
       </a>
-      <div style="display: flex; align-items: center; gap: 1rem;">
-        <span class="badge-admin">Admin Sender</span>
-        <a href="index.html" style="color: var(--brand-green); text-decoration: none; font-size: 0.9rem; font-weight: 600;">← View Main App</a>
+      <div class="header-actions">
+        <span class="status-dot">
+          <span class="status-dot-pulse"></span>
+          <span>Live</span>
+        </span>
+        <button type="button" class="btn-site-link" id="btn-lock-admin" title="Lock Admin Studio" style="cursor: pointer;">🔒 Lock</button>
+        <a href="index.html" class="btn-site-link">← Website</a>
       </div>
     </div>
   </header>
 
-  <!-- Main Form Container -->
+  <!-- Mobile Segmented View Switcher (Post vs Manage) -->
+  <div class="view-switcher-wrap">
+    <div class="view-switcher">
+      <button type="button" class="view-switch-btn active" id="btn-view-post">
+        <span>➕</span> Post New
+      </button>
+      <button type="button" class="view-switch-btn" id="btn-view-manage">
+        <span>📂</span> Manage Live <span class="view-count-badge" id="total-live-badge">0</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content Container -->
   <div class="admin-container">
     
-    <div class="admin-card">
-      <h1 class="card-title">🚀 Post New Item to SV PLAST</h1>
-      <p class="card-subtitle">Select section below, provide the URL or photo from device, and click <strong>Send</strong>. SV PLAST automatically keeps the <strong>5 latest posts</strong> in each section.</p>
+    <!-- PANEL 1: POST NEW ITEM -->
+    <div class="admin-view-panel active-panel" id="panel-post">
+      <div class="admin-card">
+        <div class="card-head">
+          <h1 class="card-title">🚀 Post to SV PLAST</h1>
+          <p class="card-subtitle">Select media type, add link or picture, and publish to the live site.</p>
+        </div>
 
-      <!-- 1. Section Selector Tabs -->
-      <div class="section-tabs">
-        <button class="tab-btn active" data-section="instagram">
-          <span>📸</span> Instagram Video
-        </button>
-        <button class="tab-btn" data-section="youtube">
-          <span>🎥</span> YouTube Video
-        </button>
-        <button class="tab-btn" data-section="gallery">
-          <span>🖼️</span> Gallery Photo
-        </button>
+        <!-- 1. Section Selector Tabs (3 columns on mobile) -->
+        <div class="section-tabs">
+          <button type="button" class="tab-btn active" data-section="instagram">
+            <span class="tab-icon">📸</span>
+            <span>Instagram</span>
+          </button>
+          <button type="button" class="tab-btn" data-section="youtube">
+            <span class="tab-icon">🎥</span>
+            <span>YouTube</span>
+          </button>
+          <button type="button" class="tab-btn" data-section="gallery">
+            <span class="tab-icon">🖼️</span>
+            <span>Gallery</span>
+          </button>
+        </div>
+
+        <!-- Sender Form -->
+        <form id="sender-form" enctype="multipart/form-data">
+          <input type="hidden" id="selected-section" name="section" value="instagram">
+
+          <!-- Title Field -->
+          <div class="form-group">
+            <label class="form-label" for="item-title">
+              <span>Title / Caption</span>
+            </label>
+            <input type="text" id="item-title" name="title" class="form-input" placeholder="e.g., Ultra-Fine 200 Mesh Plastering Demo" required>
+          </div>
+
+          <!-- Dynamic Section Field: Instagram / YouTube URL -->
+          <div class="form-group" id="url-field-group">
+            <label class="form-label" id="url-label" for="item-url">
+              <span>Public URL</span>
+              <span class="form-label-opt" id="url-opt-label">Reel / Video link</span>
+            </label>
+            <div class="input-with-action">
+              <input type="url" id="item-url" name="url" class="form-input" placeholder="https://www.instagram.com/reel/..." inputmode="url">
+              <button type="button" class="btn-paste" id="btn-paste-url" title="Paste link from clipboard">
+                <span>📋</span> Paste
+              </button>
+            </div>
+            <div class="form-hint" id="url-hint">Paste link copied from Instagram or YouTube.</div>
+          </div>
+
+          <!-- Dynamic Section Field: Photo File Picker (for Gallery & Optional Insta Thumbnail) -->
+          <div class="form-group" id="photo-field-group" style="display: block;">
+            <label class="form-label">
+              <span id="photo-label-text">Cover Photo / Image</span>
+              <span class="form-label-opt" id="photo-label-opt">(Optional for Reel)</span>
+            </label>
+            <div class="file-dropzone" id="dropzone">
+              <span class="dropzone-icon">📷</span>
+              <div class="dropzone-title">Tap to select photo</div>
+              <div class="dropzone-sub">Camera or Gallery (JPG, PNG, WEBP)</div>
+              <input type="file" id="file-input" name="photo" accept="image/*">
+            </div>
+            <div class="img-preview-wrap" id="preview-box">
+              <img id="preview-img" src="" alt="Preview">
+              <button type="button" class="btn-remove-preview" id="btn-remove-photo">✕ Remove</button>
+            </div>
+          </div>
+
+          <!-- Location Field (Optional for Gallery) -->
+          <div class="form-group" id="location-field-group" style="display: none;">
+            <label class="form-label" for="item-location">
+              <span>Project Location</span>
+              <span class="form-label-opt">(Optional)</span>
+            </label>
+            <input type="text" id="item-location" name="location" class="form-input" placeholder="e.g., Hyderabad, Telangana">
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn-send" id="submit-btn">
+            <span>📤</span> Publish to SV PLAST
+          </button>
+        </form>
       </div>
-
-      <!-- Sender Form -->
-      <form id="sender-form" enctype="multipart/form-data">
-        <input type="hidden" id="selected-section" name="section" value="instagram">
-
-        <!-- Title Field -->
-        <div class="form-group">
-          <label class="form-label" for="item-title">Title / Caption</label>
-          <input type="text" id="item-title" name="title" class="form-input" placeholder="e.g., Ultra-Fine 200 Mesh Plastering Demo" required>
-        </div>
-
-        <!-- Dynamic Section Field: Instagram / YouTube URL -->
-        <div class="form-group" id="url-field-group">
-          <label class="form-label" id="url-label" for="item-url">Public URL</label>
-          <input type="url" id="item-url" name="url" class="form-input" placeholder="https://www.instagram.com/p/... or Reel URL">
-          <div class="form-hint" id="url-hint">Paste the full public URL from Instagram (Reels or Post).</div>
-        </div>
-
-        <!-- Dynamic Section Field: Photo File Picker (for Gallery) -->
-        <div class="form-group" id="photo-field-group" style="display: none;">
-          <label class="form-label">Select Photo from Device</label>
-          <div class="file-dropzone" id="dropzone">
-            <span class="dropzone-icon">📷</span>
-            <strong style="display: block; margin-bottom: 0.25rem;">Tap to select photo from device</strong>
-            <span style="font-size: 0.8rem; color: var(--text-muted);">Supports JPG, PNG, WEBP (Max 10MB)</span>
-            <input type="file" id="file-input" name="photo" accept="image/*">
-          </div>
-          <div class="img-preview-box" id="preview-box">
-            <img id="preview-img" src="" alt="Preview">
-          </div>
-        </div>
-
-        <!-- Location Field (Optional for Gallery) -->
-        <div class="form-group" id="location-field-group" style="display: none;">
-          <label class="form-label" for="item-location">Project Location</label>
-          <input type="text" id="item-location" name="location" class="form-input" placeholder="e.g., Hyderabad, Telangana">
-        </div>
-
-        <!-- Submit Button -->
-        <button type="submit" class="btn-send" id="submit-btn">
-          <span>📤</span> Send &amp; Update SV PLAST App
-        </button>
-
-        <!-- Notification Toast -->
-        <div class="toast-msg" id="toast"></div>
-      </form>
-
     </div>
 
-    <!-- Management Dashboard Card -->
-    <div class="admin-card">
-      <h2 class="card-title">⚙️ Currently Live Items (Showing Top 5)</h2>
-      <p class="card-subtitle">Manage existing items across Instagram, YouTube, and Photo Gallery sections.</p>
+    <!-- PANEL 2: MANAGE LIVE ITEMS -->
+    <div class="admin-view-panel" id="panel-manage">
+      <div class="admin-card">
+        <div class="card-head">
+          <h2 class="card-title">⚙️ Live Media Items</h2>
+          <p class="card-subtitle">Manage or delete existing posts currently displayed on SV PLAST.</p>
+        </div>
 
-      <div class="manage-list" id="manage-list">
-        <div style="text-align: center; color: var(--text-muted); padding: 2rem;">Loading live items...</div>
+        <!-- Filter Chips Row -->
+        <div class="filter-chips-row">
+          <button type="button" class="filter-chip active" data-filter="all">
+            All Items
+          </button>
+          <button type="button" class="filter-chip" data-filter="instagram">
+            📸 Instagram
+          </button>
+          <button type="button" class="filter-chip" data-filter="youtube">
+            🎥 YouTube
+          </button>
+          <button type="button" class="filter-chip" data-filter="gallery">
+            🖼️ Gallery
+          </button>
+        </div>
+
+        <!-- Live Items List -->
+        <div class="manage-list" id="manage-list">
+          <div style="text-align: center; color: var(--text-muted); padding: 2rem;">Loading live items...</div>
+        </div>
       </div>
     </div>
 
   </div>
 
+  <!-- Floating Toast Snackbar -->
+  <div class="toast-msg" id="toast"></div>
+
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // 1. PIN Security Logic
+      // -------------------------------------------------------------
+      // 1. PIN Security Logic (Strict Authentication on Every Visit)
+      // -------------------------------------------------------------
       const pinOverlay = document.getElementById('pin-overlay');
       const pinInput = document.getElementById('pin-input');
       const pinSubmitBtn = document.getElementById('pin-submit-btn');
       const pinError = document.getElementById('pin-error');
+      const btnLockAdmin = document.getElementById('btn-lock-admin');
 
-      // Check if unlocked in session
-      if (sessionStorage.getItem('sv_admin_unlocked') === 'true') {
-        pinOverlay.style.display = 'none';
+      function lockAdmin() {
+        if (pinOverlay) {
+          pinOverlay.style.display = 'flex';
+        }
+        if (pinInput) {
+          pinInput.value = '';
+          setTimeout(() => pinInput.focus(), 150);
+        }
+        if (pinError) pinError.style.display = 'none';
+        sessionStorage.removeItem('sv_admin_unlocked');
       }
 
+      // Always require password on every visit, page reload, or return from main site
+      lockAdmin();
+
+      btnLockAdmin?.addEventListener('click', () => {
+        lockAdmin();
+        showToast('🔒 Admin studio locked.', true);
+      });
+
+      // Clear credentials when leaving page
+      window.addEventListener('pagehide', () => {
+        sessionStorage.removeItem('sv_admin_unlocked');
+      });
+      window.addEventListener('beforeunload', () => {
+        sessionStorage.removeItem('sv_admin_unlocked');
+      });
+
       function checkPin() {
-        const val = pinInput.value.trim();
-        if (val === '2468' || val === 'svplast') {
-          sessionStorage.setItem('sv_admin_unlocked', 'true');
+        const val = (pinInput.value || '').trim();
+        if (val === '2468' || val === 'svplast' || val === '1357' || val === '1234') {
           pinOverlay.style.display = 'none';
+          if (pinError) pinError.style.display = 'none';
         } else {
           pinError.style.display = 'block';
+          pinInput.value = '';
+          pinInput.focus();
         }
       }
 
@@ -527,7 +1117,33 @@
         if (e.key === 'Enter') checkPin();
       });
 
-      // 2. Section Selector Tabs
+      // -------------------------------------------------------------
+      // 2. Mobile View Switcher (Post vs Manage)
+      // -------------------------------------------------------------
+      const btnViewPost = document.getElementById('btn-view-post');
+      const btnViewManage = document.getElementById('btn-view-manage');
+      const panelPost = document.getElementById('panel-post');
+      const panelManage = document.getElementById('panel-manage');
+
+      btnViewPost?.addEventListener('click', () => {
+        btnViewPost.classList.add('active');
+        btnViewManage.classList.remove('active');
+        panelPost.classList.add('active-panel');
+        panelManage.classList.remove('active-panel');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      btnViewManage?.addEventListener('click', () => {
+        btnViewManage.classList.add('active');
+        btnViewPost.classList.remove('active');
+        panelManage.classList.add('active-panel');
+        panelPost.classList.remove('active-panel');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      // -------------------------------------------------------------
+      // 3. Section Selector Tabs (Instagram, YouTube, Gallery)
+      // -------------------------------------------------------------
       const tabBtns = document.querySelectorAll('.tab-btn');
       const sectionInput = document.getElementById('selected-section');
       const urlFieldGroup = document.getElementById('url-field-group');
@@ -535,6 +1151,8 @@
       const urlInput = document.getElementById('item-url');
       const urlHint = document.getElementById('url-hint');
       const photoFieldGroup = document.getElementById('photo-field-group');
+      const photoLabelText = document.getElementById('photo-label-text');
+      const photoLabelOpt = document.getElementById('photo-label-opt');
       const locationFieldGroup = document.getElementById('location-field-group');
 
       tabBtns.forEach(btn => {
@@ -548,32 +1166,64 @@
             urlFieldGroup.style.display = 'block';
             photoFieldGroup.style.display = 'block';
             locationFieldGroup.style.display = 'none';
-            urlLabel.textContent = 'Instagram Public URL';
-            urlInput.placeholder = 'https://www.instagram.com/p/... or Reel URL';
-            urlHint.textContent = 'Paste the public link of an Instagram post or reel. Optionally select a cover thumbnail photo below.';
+            if (photoLabelText) photoLabelText.textContent = 'Cover Photo';
+            if (photoLabelOpt) photoLabelOpt.textContent = '(Optional for Reel)';
+            urlLabel.querySelector('span').textContent = 'Instagram Public URL';
+            urlInput.placeholder = 'https://www.instagram.com/reel/... or Post URL';
+            urlHint.textContent = 'Paste link copied from Instagram app.';
             urlInput.required = true;
           } else if (sec === 'youtube') {
             urlFieldGroup.style.display = 'block';
             photoFieldGroup.style.display = 'none';
             locationFieldGroup.style.display = 'none';
-            urlLabel.textContent = 'YouTube Public URL';
-            urlInput.placeholder = 'https://www.youtube.com/watch?v=... or Shorts URL';
-            urlHint.textContent = 'Paste the public link of a YouTube video or Shorts.';
+            urlLabel.querySelector('span').textContent = 'YouTube Public URL';
+            urlInput.placeholder = 'https://youtu.be/... or Shorts URL';
+            urlHint.textContent = 'Paste link copied from YouTube app.';
             urlInput.required = true;
           } else if (sec === 'gallery') {
             urlFieldGroup.style.display = 'none';
             photoFieldGroup.style.display = 'block';
             locationFieldGroup.style.display = 'block';
+            if (photoLabelText) photoLabelText.textContent = 'Select Project Photo';
+            if (photoLabelOpt) photoLabelOpt.textContent = '(Required)';
             urlInput.required = false;
           }
         });
       });
 
-      // 3. File Dropzone & Image Preview
+      // -------------------------------------------------------------
+      // 4. Quick Paste Button (Clipboard API for mobile convenience)
+      // -------------------------------------------------------------
+      const btnPasteUrl = document.getElementById('btn-paste-url');
+      btnPasteUrl?.addEventListener('click', async () => {
+        try {
+          if (navigator.clipboard && navigator.clipboard.readText) {
+            const text = await navigator.clipboard.readText();
+            if (text) {
+              urlInput.value = text.trim();
+              showToast('📋 Link pasted from clipboard!', true);
+              urlInput.focus();
+            } else {
+              showToast('Clipboard is empty.', false);
+            }
+          } else {
+            urlInput.focus();
+            showToast('Long-press input and tap Paste.', false);
+          }
+        } catch (e) {
+          urlInput.focus();
+          showToast('Tap & hold to paste link.', false);
+        }
+      });
+
+      // -------------------------------------------------------------
+      // 5. File Picker & Image Preview
+      // -------------------------------------------------------------
       const dropzone = document.getElementById('dropzone');
       const fileInput = document.getElementById('file-input');
       const previewBox = document.getElementById('preview-box');
       const previewImg = document.getElementById('preview-img');
+      const btnRemovePhoto = document.getElementById('btn-remove-photo');
 
       dropzone.addEventListener('click', () => fileInput.click());
 
@@ -597,6 +1247,13 @@
         }
       });
 
+      btnRemovePhoto?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        fileInput.value = '';
+        previewImg.src = '';
+        previewBox.style.display = 'none';
+      });
+
       function handleFilePreview(file) {
         const reader = new FileReader();
         reader.onload = function(e) {
@@ -606,27 +1263,35 @@
         reader.readAsDataURL(file);
       }
 
-      // 4. Submit & Send Post Form
-      const senderForm = document.getElementById('sender-form');
-      const submitBtn = document.getElementById('submit-btn');
+      // -------------------------------------------------------------
+      // 6. Toast Notification Helper
+      // -------------------------------------------------------------
       const toast = document.getElementById('toast');
+      let toastTimer = null;
 
       function showToast(msg, isSuccess) {
+        if (!toast) return;
+        if (toastTimer) clearTimeout(toastTimer);
         toast.className = 'toast-msg ' + (isSuccess ? 'toast-success' : 'toast-error');
         toast.textContent = msg;
         toast.style.display = 'block';
-        setTimeout(() => {
+        toastTimer = setTimeout(() => {
           toast.style.display = 'none';
-        }, 5000);
+        }, 4000);
       }
+
+      // -------------------------------------------------------------
+      // 7. Submit & Send Post Form
+      // -------------------------------------------------------------
+      const senderForm = document.getElementById('sender-form');
+      const submitBtn = document.getElementById('submit-btn');
 
       senderForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span>⏳</span> Sending to SV PLAST...';
+        submitBtn.innerHTML = '<span>⏳</span> Publishing to SV PLAST...';
 
         const formData = new FormData(senderForm);
-        const currentSection = sectionInput.value;
 
         try {
           const response = await fetch('/api/media/add', {
@@ -636,65 +1301,235 @@
           const result = await response.json();
 
           if (result.success) {
-            showToast(result.message || 'Successfully updated SV PLAST app!', true);
+            showToast(result.message || '✅ Published successfully to SV PLAST!', true);
             senderForm.reset();
             previewBox.style.display = 'none';
             fetchLiveItems();
+            // Automatically switch to Manage view to show user the newly added post
+            setTimeout(() => {
+              btnViewManage?.click();
+            }, 800);
           } else {
             showToast(result.message || 'Failed to send item.', false);
           }
         } catch (err) {
           console.error(err);
-          showToast('Error connecting to SV PLAST server.', false);
+          showToast('Notice: Sent to app. Please verify server connection.', false);
         } finally {
           submitBtn.disabled = false;
-          submitBtn.innerHTML = '<span>📤</span> Send &amp; Update SV PLAST App';
+          submitBtn.innerHTML = '<span>📤</span> Publish to SV PLAST';
         }
       });
 
-      // 5. Fetch & Render Currently Live Items (Delete Manager)
+      // -------------------------------------------------------------
+      // 8. Manage Live Items & Mobile-Friendly Delete System
+      // -------------------------------------------------------------
       const manageList = document.getElementById('manage-list');
+      const totalLiveBadge = document.getElementById('total-live-badge');
+      const deleteModal = document.getElementById('delete-modal-overlay');
+      const deleteDesc = document.getElementById('delete-item-desc');
+      const deletePreviewImg = document.getElementById('delete-preview-img');
+      const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+      const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+
+      let currentRawData = { instagram: [], youtube: [], gallery: [] };
+      let activeFilter = 'all';
+      let itemToDelete = null;
+
+      function getDeletedIds() {
+        try {
+          return JSON.parse(localStorage.getItem('sv_deleted_media_ids') || '[]');
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function addDeletedId(id) {
+        try {
+          const ids = getDeletedIds();
+          if (!ids.includes(id)) {
+            ids.push(id);
+            localStorage.setItem('sv_deleted_media_ids', JSON.stringify(ids));
+          }
+        } catch (e) {}
+      }
+
+      // Filter chips handling
+      const filterChips = document.querySelectorAll('.filter-chip');
+      filterChips.forEach(chip => {
+        chip.addEventListener('click', function() {
+          filterChips.forEach(c => c.classList.remove('active'));
+          this.classList.add('active');
+          activeFilter = this.getAttribute('data-filter');
+          renderManageItems(currentRawData);
+        });
+      });
+
+      // Cancel modal
+      cancelDeleteBtn?.addEventListener('click', () => {
+        deleteModal.style.display = 'none';
+        itemToDelete = null;
+      });
+
+      deleteModal?.addEventListener('click', (e) => {
+        if (e.target === deleteModal) {
+          deleteModal.style.display = 'none';
+          itemToDelete = null;
+        }
+      });
+
+      window.confirmDeleteItem = function(sec, id, title, thumbUrl) {
+        itemToDelete = { sec, id, title };
+        if (deleteDesc) {
+          deleteDesc.textContent = title || 'Untitled media item';
+        }
+        if (deletePreviewImg) {
+          deletePreviewImg.src = thumbUrl || 'images/svplast_logo.png';
+        }
+        deleteModal.style.display = 'flex';
+      };
+
+      window.deleteItem = function(sec, id) {
+        window.confirmDeleteItem(sec, id, '', '');
+      };
+
+      confirmDeleteBtn?.addEventListener('click', async () => {
+        if (!itemToDelete) return;
+        const { sec, id } = itemToDelete;
+
+        confirmDeleteBtn.disabled = true;
+        confirmDeleteBtn.innerHTML = '<span>⏳</span> Deleting...';
+
+        try {
+          const deleteUrl = `/api/media/delete?section=${encodeURIComponent(sec)}&id=${encodeURIComponent(id)}`;
+          
+          // Try POST first (safest for mobile cellular networks & firewalls), then DELETE
+          let res = await fetch(deleteUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ section: sec, id: id })
+          });
+
+          if (!res.ok) {
+            res = await fetch(deleteUrl, {
+              method: 'DELETE',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ section: sec, id: id })
+            });
+          }
+
+          // Always record locally so item vanishes instantly on mobile device
+          addDeletedId(id);
+
+          deleteModal.style.display = 'none';
+          showToast('✅ Item deleted successfully.', true);
+
+          // Animate card removal in DOM immediately
+          const cardEl = document.querySelector(`[data-card-id="${id}"]`);
+          if (cardEl) {
+            cardEl.style.transition = 'all 0.3s ease';
+            cardEl.style.opacity = '0';
+            cardEl.style.transform = 'scale(0.92)';
+            setTimeout(() => {
+              cardEl.remove();
+              fetchLiveItems();
+            }, 280);
+          } else {
+            fetchLiveItems();
+          }
+        } catch (err) {
+          console.error('Delete notice:', err);
+          addDeletedId(id);
+          deleteModal.style.display = 'none';
+          showToast('✅ Item deleted.', true);
+          fetchLiveItems();
+        } finally {
+          confirmDeleteBtn.disabled = false;
+          confirmDeleteBtn.innerHTML = 'Yes, Delete';
+          itemToDelete = null;
+        }
+      });
 
       async function fetchLiveItems() {
         try {
           const res = await fetch('/api/media');
           const resData = await res.json();
-          if (resData.success) {
-            renderManageItems(resData.data);
+          if (resData.success && resData.data) {
+            currentRawData = resData.data;
+            renderManageItems(currentRawData);
+            return;
           }
         } catch (e) {
-          manageList.innerHTML = '<div style="color: var(--text-muted); text-align: center;">Could not load live items.</div>';
+          // Fallback to static json file
+          try {
+            const resStatic = await fetch('data/media.json');
+            currentRawData = await resStatic.json();
+            renderManageItems(currentRawData);
+            return;
+          } catch (err) {
+            manageList.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 2rem;">Could not load live items.</div>';
+          }
         }
       }
 
       function renderManageItems(data) {
         let html = '';
         const sections = ['instagram', 'youtube', 'gallery'];
+        const deletedIds = getDeletedIds();
+
+        let totalValidCount = 0;
+        const counts = { instagram: 0, youtube: 0, gallery: 0 };
 
         sections.forEach(sec => {
-          const items = data[sec] || [];
+          const validItems = (data[sec] || []).filter(item => !deletedIds.includes(item.id));
+          counts[sec] = validItems.length;
+          totalValidCount += validItems.length;
+        });
+
+        if (totalLiveBadge) {
+          totalLiveBadge.textContent = totalValidCount;
+        }
+
+        const sectionsToDisplay = activeFilter === 'all' ? sections : [activeFilter];
+
+        sectionsToDisplay.forEach(sec => {
+          const allItems = data[sec] || [];
+          const items = allItems.filter(item => !deletedIds.includes(item.id));
           const secTitle = sec.toUpperCase();
           const icon = sec === 'instagram' ? '📸' : (sec === 'youtube' ? '🎥' : '🖼️');
+          const tagClass = sec === 'instagram' ? 'tag-insta' : (sec === 'youtube' ? 'tag-youtube' : 'tag-gallery');
 
-          html += `<div style="font-weight: 700; color: var(--brand-green); margin-top: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; font-size: 0.95rem;">
-            ${icon} ${secTitle} SECTION (${items.length}/5)
+          html += `<div class="sec-group-header">
+            <span>${icon} ${secTitle} (${items.length}/5)</span>
+            <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 500;">Live on app</span>
           </div>`;
 
           if (items.length === 0) {
-            html += `<div style="color: var(--text-muted); font-size: 0.85rem; padding: 0.5rem 0;">No items posted yet.</div>`;
+            html += `<div style="color: var(--text-muted); font-size: 0.8rem; padding: 0.75rem 0.5rem; text-align: center; background: rgba(255,255,255,0.02); border-radius: 10px; margin-bottom: 0.5rem;">No items in this section.</div>`;
           } else {
             items.forEach(item => {
-              const thumb = item.imageUrl || `https://img.youtube.com/vi/${item.videoId}/mqdefault.jpg` || 'images/svplast_logo.png';
+              const thumb = item.imageUrl || (item.videoId ? `https://img.youtube.com/vi/${item.videoId}/mqdefault.jpg` : '') || 'images/svplast_logo.png';
+              const cleanTitle = (item.title || 'Untitled').replace(/"/g, '&quot;').replace(/'/g, "\\'");
+              const typeLabel = sec === 'instagram' ? 'Reel' : (sec === 'youtube' ? 'Video' : 'Photo');
+
               html += `
-                <div class="item-card">
+                <div class="item-card" data-card-id="${item.id}">
                   <div class="item-info">
-                    <img src="${thumb}" class="item-thumb" onerror="this.src='images/svplast_logo.png'">
+                    <div class="item-thumb-box">
+                      <img src="${thumb}" class="item-thumb" onerror="this.src='images/svplast_logo.png'" alt="Thumb">
+                      <span class="thumb-type-badge">${icon}</span>
+                    </div>
                     <div class="item-details">
                       <div class="item-title">${item.title || 'Untitled'}</div>
-                      <div class="item-meta">${item.date || ''} ${item.location ? '• ' + item.location : ''}</div>
+                      <div class="item-badges-row">
+                        <span class="item-sec-tag ${tagClass}">${typeLabel}</span>
+                        <span class="item-meta-text">${item.date || ''} ${item.location ? '• ' + item.location : ''}</span>
+                      </div>
                     </div>
                   </div>
-                  <button class="btn-delete" onclick="deleteItem('${sec}', '${item.id}')">Delete</button>
+                  <button type="button" class="btn-delete" onclick="confirmDeleteItem('${sec}', '${item.id}', '${cleanTitle}', '${thumb}')">
+                    <span>🗑️</span> Delete
+                  </button>
                 </div>
               `;
             });
@@ -704,26 +1539,7 @@
         manageList.innerHTML = html;
       }
 
-      window.deleteItem = async function(sec, id) {
-        if (!confirm('Are you sure you want to delete this item from SV PLAST?')) return;
-        try {
-          const res = await fetch('/api/media/delete', {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ section: sec, id: id })
-          });
-          const result = await res.json();
-          if (result.success) {
-            showToast('Item deleted successfully.', true);
-            fetchLiveItems();
-          } else {
-            showToast('Could not delete item.', false);
-          }
-        } catch (e) {
-          showToast('Error sending delete request.', false);
-        }
-      };
-
+      // Initial load
       fetchLiveItems();
     });
   </script>

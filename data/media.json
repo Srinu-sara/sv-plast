@@ -1,20 +1,6 @@
 {
   "instagram": [
     {
-      "id": "insta_1789264723205",
-      "url": "https://www.instagram.com/reel/DdL4fkUywKb/?utm_source=ig_web_copy_link&stkn=NTc4MTIwNjQ2YQ==",
-      "imageUrl": "images/frame_018.webp",
-      "title": "Ultra-Fine Gypsum Mirror Finish Demo Reel",
-      "date": "2026-09-13"
-    },
-    {
-      "id": "insta_2",
-      "url": "https://www.instagram.com/p/C2o8bKqR4xy/",
-      "imageUrl": "images/frame_025.webp",
-      "title": "Zero Water Curing Application in Hyderabad",
-      "date": "2026-09-08"
-    },
-    {
       "id": "insta_3",
       "url": "https://www.instagram.com/p/C1n7cJsT5zz/",
       "imageUrl": "images/finished_gypsum_wall.webp",
@@ -37,13 +23,6 @@
     }
   ],
   "youtube": [
-    {
-      "id": "yt_1789457497843",
-      "url": "https://youtu.be/_fg6zqA3UjY?si=1o08JUMndwoI-sOg",
-      "videoId": "_fg6zqA3UjY",
-      "title": "work",
-      "date": "2026-09-15"
-    },
     {
       "id": "yt_1789455980909",
       "url": "https://youtu.be/_fg6zqA3UjY?si=1o08JUMndwoI-sOg",
@@ -101,13 +80,6 @@
       "title": "Glass-Smooth Precision Finish Wall",
       "location": "Pan-India Project",
       "date": "2026-08-29"
-    },
-    {
-      "id": "gal_5",
-      "imageUrl": "images/product_bag.webp",
-      "title": "25kg Pure Gypsum Plaster Bags",
-      "location": "Warehouse Stock",
-      "date": "2026-08-24"
     }
   ]
 }

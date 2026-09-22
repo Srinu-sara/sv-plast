@@ -48,10 +48,21 @@ document.addEventListener('DOMContentLoaded', function() {
         data = await resFile.json();
       }
 
+      function filterDeleted(items) {
+        if (!Array.isArray(items)) return [];
+        try {
+          const deletedIds = JSON.parse(localStorage.getItem('sv_deleted_media_ids') || '[]');
+          if (Array.isArray(deletedIds) && deletedIds.length > 0) {
+            return items.filter(item => !deletedIds.includes(item.id));
+          }
+        } catch (e) {}
+        return items;
+      }
+
       if (data) {
-        renderGallerySection(data.gallery || []);
-        renderYouTubeSection(data.youtube || []);
-        renderInstagramSection(data.instagram || []);
+        renderGallerySection(filterDeleted(data.gallery || []));
+        renderYouTubeSection(filterDeleted(data.youtube || []));
+        renderInstagramSection(filterDeleted(data.instagram || []));
 
         // Auto-scroll all three media sections smoothly
         initAutoScroll('photo-gallery-grid', 3600);

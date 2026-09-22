@@ -316,16 +316,16 @@ document.addEventListener('DOMContentLoaded', () => {
   function calculateSavings() {
     const area = parseFloat(rangeInput?.value || areaInput?.value || 1000);
 
-    // Exact Image 3 math:
-    // 12mm: 20 sq.ft per 25kg bag -> 1000 sq.ft = 50 bags
+    // Exact coverage math per 25kg bag:
     // 10mm: 24 sq.ft per 25kg bag
-    // 8mm: 30 sq.ft per 25kg bag
+    // 12mm: 20 sq.ft per 25kg bag -> 1000 sq.ft = 50 bags
     // 15mm: 16 sq.ft per 25kg bag
+    // 18mm: 240 / 18 ≈ 13.33 sq.ft per 25kg bag -> 1000 sq.ft = 75 bags
     let sqFtPerBag = 20;
-    if (selectedThickness === 8) sqFtPerBag = 30;
-    else if (selectedThickness === 10) sqFtPerBag = 24;
+    if (selectedThickness === 10) sqFtPerBag = 24;
     else if (selectedThickness === 12) sqFtPerBag = 20;
     else if (selectedThickness === 15) sqFtPerBag = 16;
+    else if (selectedThickness === 18) sqFtPerBag = 240 / 18;
 
     const bags = Math.ceil(area / sqFtPerBag);
     const waterSaved = Math.round(area * 15);
@@ -508,7 +508,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnOrderCalc) {
     btnOrderCalc.addEventListener('click', () => {
       const area = areaInput?.value || '1500';
-      const thickness = thicknessSelect?.value || '12';
+      const thickness = selectedThickness || '12';
       const bags = outBags?.textContent || '154';
       const text = `*SV PLAST Material Requirement Estimate*%0A` +
         `*Estimated Area:* ${area} sq.ft%0A` +

@@ -174,17 +174,21 @@ app.post('/api/media/add', upload.single('photo'), (req, res) => {
   res.status(500).json({ success: false, message: 'Failed to process post request.' });
 });
 
-// 3. DELETE /api/media/delete - Delete item by ID
-app.delete('/api/media/delete', (req, res) => {
-  const { section, id } = req.body;
+// 3. DELETE & POST /api/media/delete - Delete item by ID (supports mobile browsers & proxies)
+const handleDeleteItem = (req, res) => {
+  const section = req.body?.section || req.query?.section;
+  const id = req.body?.id || req.query?.id;
+
   if (!section || !id || !['instagram', 'youtube', 'gallery'].includes(section)) {
     return res.status(400).json({ success: false, message: 'Invalid section or item ID.' });
   }
 
   const currentData = getMediaData();
   if (currentData[section]) {
+    const initialLen = currentData[section].length;
     currentData[section] = currentData[section].filter(item => item.id !== id);
     saveMediaData(currentData);
+    console.log(`[Admin Delete] Deleted "${id}" from "${section}". Count: ${initialLen} -> ${currentData[section].length}`);
   }
 
   res.json({
@@ -196,7 +200,10 @@ app.delete('/api/media/delete', (req, res) => {
       gallery: currentData.gallery || []
     }
   });
-});
+};
+
+app.delete('/api/media/delete', handleDeleteItem);
+app.post('/api/media/delete', handleDeleteItem);
 
 // Fallback to index.html for single-page routing
 app.get('*', (req, res) => {
