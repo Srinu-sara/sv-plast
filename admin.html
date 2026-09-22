@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#0a0f12">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -229,8 +231,15 @@
     }
 
     @keyframes fadeInView {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .admin-card {
@@ -407,7 +416,8 @@
       justify-content: center;
     }
 
-    .file-dropzone:active, .file-dropzone.dragover {
+    .file-dropzone:active,
+    .file-dropzone.dragover {
       border-color: var(--brand-green);
       background: rgba(0, 208, 132, 0.08);
       transform: scale(0.99);
@@ -708,7 +718,10 @@
        ------------------------------------------- */
     .pin-overlay {
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       background: rgba(0, 0, 0, 0.82);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
@@ -732,8 +745,15 @@
     }
 
     @keyframes modalScaleUp {
-      from { opacity: 0; transform: scale(0.92); }
-      to { opacity: 1; transform: scale(1); }
+      from {
+        opacity: 0;
+        transform: scale(0.92);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
     /* On mobile view, bottom-sheet style for delete confirmation */
@@ -742,6 +762,7 @@
         align-items: flex-end;
         padding: 0;
       }
+
       #delete-modal-overlay .pin-box {
         max-width: 100%;
         border-radius: 24px 24px 0 0;
@@ -749,9 +770,15 @@
         animation: sheetSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1);
         border-bottom: none;
       }
+
       @keyframes sheetSlideUp {
-        from { transform: translateY(100%); }
-        to { transform: translateY(0); }
+        from {
+          transform: translateY(100%);
+        }
+
+        to {
+          transform: translateY(0);
+        }
       }
     }
 
@@ -826,8 +853,15 @@
     }
 
     @keyframes toastSlideUp {
-      from { opacity: 0; transform: translate(-50%, 15px); }
-      to { opacity: 1; transform: translate(-50%, 0); }
+      from {
+        opacity: 0;
+        transform: translate(-50%, 15px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
     }
 
     .toast-success {
@@ -847,9 +881,11 @@
       .view-switcher-wrap {
         display: none;
       }
+
       .admin-view-panel {
         display: block !important;
       }
+
       .admin-container {
         display: grid;
         grid-template-columns: 1.15fr 1fr;
@@ -859,6 +895,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- Security Passcode Auth Modal -->
@@ -870,10 +907,13 @@
         Enter admin PIN to manage media content.
       </p>
       <div class="form-group">
-        <input type="password" id="pin-input" class="form-input" placeholder="••••" inputmode="numeric" pattern="[0-9]*" style="text-align: center; font-size: 1.5rem; letter-spacing: 6px;" autofocus>
+        <input type="password" id="pin-input" class="form-input" placeholder="••••" inputmode="numeric" pattern="[0-9]*"
+          style="text-align: center; font-size: 1.5rem; letter-spacing: 6px;" autofocus>
       </div>
-      <button type="button" class="btn-send" id="pin-submit-btn" style="margin-top: 0.5rem;">Unlock Admin Studio</button>
-      <div id="pin-error" style="color: #f87171; font-size: 0.8rem; margin-top: 0.85rem; display: none;">Incorrect PIN code. Please try again.</div>
+      <button type="button" class="btn-send" id="pin-submit-btn" style="margin-top: 0.5rem;">Unlock Admin
+        Studio</button>
+      <div id="pin-error" style="color: #f87171; font-size: 0.8rem; margin-top: 0.85rem; display: none;">Incorrect PIN
+        code. Please try again.</div>
     </div>
   </div>
 
@@ -893,10 +933,12 @@
       </div>
 
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem;">
-        <button type="button" id="cancel-delete-btn" style="background: rgba(255,255,255,0.08); color: #e2e8f0; border: 1px solid var(--border-color); padding: 0.85rem; border-radius: 12px; font-weight: 600; font-size: 0.92rem; cursor: pointer;">
+        <button type="button" id="cancel-delete-btn"
+          style="background: rgba(255,255,255,0.08); color: #e2e8f0; border: 1px solid var(--border-color); padding: 0.85rem; border-radius: 12px; font-weight: 600; font-size: 0.92rem; cursor: pointer;">
           Cancel
         </button>
-        <button type="button" id="confirm-delete-btn" style="background: #ef4444; color: #fff; border: none; padding: 0.85rem; border-radius: 12px; font-weight: 700; font-size: 0.92rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.4rem;">
+        <button type="button" id="confirm-delete-btn"
+          style="background: #ef4444; color: #fff; border: none; padding: 0.85rem; border-radius: 12px; font-weight: 700; font-size: 0.92rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.4rem;">
           Yes, Delete
         </button>
       </div>
@@ -918,7 +960,8 @@
           <span class="status-dot-pulse"></span>
           <span>Live</span>
         </span>
-        <button type="button" class="btn-site-link" id="btn-lock-admin" title="Lock Admin Studio" style="cursor: pointer;">🔒 Lock</button>
+        <button type="button" class="btn-site-link" id="btn-lock-admin" title="Lock Admin Studio"
+          style="cursor: pointer;">🔒 Lock</button>
         <a href="index.html" class="btn-site-link">← Website</a>
       </div>
     </div>
@@ -938,7 +981,7 @@
 
   <!-- Main Content Container -->
   <div class="admin-container">
-    
+
     <!-- PANEL 1: POST NEW ITEM -->
     <div class="admin-view-panel active-panel" id="panel-post">
       <div class="admin-card">
@@ -972,7 +1015,8 @@
             <label class="form-label" for="item-title">
               <span>Title / Caption</span>
             </label>
-            <input type="text" id="item-title" name="title" class="form-input" placeholder="e.g., Ultra-Fine 200 Mesh Plastering Demo" required>
+            <input type="text" id="item-title" name="title" class="form-input"
+              placeholder="e.g., Ultra-Fine 200 Mesh Plastering Demo" required>
           </div>
 
           <!-- Dynamic Section Field: Instagram / YouTube URL -->
@@ -982,7 +1026,8 @@
               <span class="form-label-opt" id="url-opt-label">Reel / Video link</span>
             </label>
             <div class="input-with-action">
-              <input type="url" id="item-url" name="url" class="form-input" placeholder="https://www.instagram.com/reel/..." inputmode="url">
+              <input type="url" id="item-url" name="url" class="form-input"
+                placeholder="https://www.instagram.com/reel/..." inputmode="url">
               <button type="button" class="btn-paste" id="btn-paste-url" title="Paste link from clipboard">
                 <span>📋</span> Paste
               </button>
@@ -1014,7 +1059,8 @@
               <span>Project Location</span>
               <span class="form-label-opt">(Optional)</span>
             </label>
-            <input type="text" id="item-location" name="location" class="form-input" placeholder="e.g., Hyderabad, Telangana">
+            <input type="text" id="item-location" name="location" class="form-input"
+              placeholder="e.g., Hyderabad, Telangana">
           </div>
 
           <!-- Submit Button -->
@@ -1062,7 +1108,7 @@
   <div class="toast-msg" id="toast"></div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       // -------------------------------------------------------------
       // 1. PIN Security Logic (Strict Authentication on Every Visit)
       // -------------------------------------------------------------
@@ -1102,7 +1148,7 @@
 
       function checkPin() {
         const val = (pinInput.value || '').trim();
-        if (val === '2468' || val === 'svplast' || val === '1357' || val === '1234') {
+        if (val === '2468' || val === 'svplast' || val === '1357') {
           pinOverlay.style.display = 'none';
           if (pinError) pinError.style.display = 'none';
         } else {
@@ -1113,7 +1159,7 @@
       }
 
       pinSubmitBtn.addEventListener('click', checkPin);
-      pinInput.addEventListener('keydown', function(e) {
+      pinInput.addEventListener('keydown', function (e) {
         if (e.key === 'Enter') checkPin();
       });
 
@@ -1156,12 +1202,12 @@
       const locationFieldGroup = document.getElementById('location-field-group');
 
       tabBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
           tabBtns.forEach(b => b.classList.remove('active'));
           this.classList.add('active');
           const sec = this.getAttribute('data-section');
           sectionInput.value = sec;
-          
+
           if (sec === 'instagram') {
             urlFieldGroup.style.display = 'block';
             photoFieldGroup.style.display = 'block';
@@ -1241,7 +1287,7 @@
         }
       });
 
-      fileInput.addEventListener('change', function() {
+      fileInput.addEventListener('change', function () {
         if (this.files && this.files[0]) {
           handleFilePreview(this.files[0]);
         }
@@ -1256,7 +1302,7 @@
 
       function handleFilePreview(file) {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
           previewImg.src = e.target.result;
           previewBox.style.display = 'block';
         };
@@ -1286,7 +1332,7 @@
       const senderForm = document.getElementById('sender-form');
       const submitBtn = document.getElementById('submit-btn');
 
-      senderForm.addEventListener('submit', async function(e) {
+      senderForm.addEventListener('submit', async function (e) {
         e.preventDefault();
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span>⏳</span> Publishing to SV PLAST...';
@@ -1351,13 +1397,13 @@
             ids.push(id);
             localStorage.setItem('sv_deleted_media_ids', JSON.stringify(ids));
           }
-        } catch (e) {}
+        } catch (e) { }
       }
 
       // Filter chips handling
       const filterChips = document.querySelectorAll('.filter-chip');
       filterChips.forEach(chip => {
-        chip.addEventListener('click', function() {
+        chip.addEventListener('click', function () {
           filterChips.forEach(c => c.classList.remove('active'));
           this.classList.add('active');
           activeFilter = this.getAttribute('data-filter');
@@ -1378,7 +1424,7 @@
         }
       });
 
-      window.confirmDeleteItem = function(sec, id, title, thumbUrl) {
+      window.confirmDeleteItem = function (sec, id, title, thumbUrl) {
         itemToDelete = { sec, id, title };
         if (deleteDesc) {
           deleteDesc.textContent = title || 'Untitled media item';
@@ -1389,7 +1435,7 @@
         deleteModal.style.display = 'flex';
       };
 
-      window.deleteItem = function(sec, id) {
+      window.deleteItem = function (sec, id) {
         window.confirmDeleteItem(sec, id, '', '');
       };
 
@@ -1402,7 +1448,7 @@
 
         try {
           const deleteUrl = `/api/media/delete?section=${encodeURIComponent(sec)}&id=${encodeURIComponent(id)}`;
-          
+
           // Try POST first (safest for mobile cellular networks & firewalls), then DELETE
           let res = await fetch(deleteUrl, {
             method: 'POST',
@@ -1544,4 +1590,5 @@
     });
   </script>
 </body>
+
 </html>

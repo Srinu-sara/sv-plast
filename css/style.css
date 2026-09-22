@@ -931,7 +931,8 @@ section {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.4rem;
   z-index: 5;
   background: rgba(0, 0, 0, 0.6);
   padding: 0.35rem 0.8rem;
@@ -939,6 +940,7 @@ section {
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.14);
   margin-top: 0.85rem;
+  max-width: 96%;
 }
 
 .slide-dot {
@@ -2544,14 +2546,61 @@ a.footer-contact-card:hover .footer-contact-val {
     padding: 0.45rem 0.9rem;
   }
 
+  .about-card {
+    padding: 1.5rem 1.15rem !important;
+    border-radius: var(--radius-md);
+  }
+
+  .about-text-lead {
+    font-size: 1.02rem;
+    line-height: 1.65;
+    margin-bottom: 1rem;
+  }
+
+  .about-text-body {
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
   .about-stats-row {
     grid-template-columns: 1fr;
     gap: 1.25rem;
+    padding-top: 1.5rem;
+  }
+
+  .comparison-table-card {
+    padding: 1.5rem 1.15rem;
+  }
+
+  .comparison-table-card .table-main-title {
+    font-size: 1.55rem;
+    line-height: 1.25;
   }
 
   .floating-quick-contact {
-    bottom: 1.5rem;
-    left: 1rem;
+    bottom: 1.25rem;
+    right: 1.25rem;
+    left: auto;
+    z-index: 999;
+  }
+
+  .floating-wa-btn {
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    border-radius: 50%;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(37, 211, 102, 0.5);
+  }
+
+  .floating-wa-btn span {
+    display: none;
+  }
+
+  .floating-wa-btn svg {
+    width: 28px;
+    height: 28px;
   }
 }
 
@@ -3113,10 +3162,57 @@ a.footer-contact-card:hover .footer-contact-val {
 }
 
 @media (max-width: 768px) {
+  .image3-estimator-box {
+    padding: 1.5rem 1rem;
+    margin-top: 1.75rem;
+  }
 
-  .est-inputs-row,
-  .est-results-row {
+  .image3-estimator-box .est-title {
+    font-size: 1.6rem;
+    line-height: 1.25;
+  }
+
+  .image3-estimator-box .est-head {
+    margin-bottom: 1.35rem;
+  }
+
+  .est-inputs-row {
     grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .est-input-card {
+    padding: 1rem 1.15rem;
+  }
+
+  .thickness-pills-group {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.35rem;
+  }
+
+  .thickness-pill {
+    min-width: 0;
+    padding: 0.65rem 0.2rem;
+    font-size: 0.8rem;
+  }
+
+  .est-results-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .est-result-card {
+    padding: 1.15rem 0.5rem;
+  }
+
+  .est-result-num {
+    font-size: 2.1rem;
+  }
+
+  .est-result-sub {
+    font-size: 0.78rem;
   }
 }
 
@@ -3703,14 +3799,98 @@ a.footer-contact-card:hover .footer-contact-val {
 @media (max-width: 860px) {
   .about-cert-grid {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+  }
+
+  .cert-feature-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.75rem 1.25rem;
     gap: 1.25rem;
   }
-  .cert-feature-card {
-    padding: 1.25rem;
-  }
+
   .cert-feature-badge-wrap {
-    width: 76px;
-    height: 76px;
+    width: 88px;
+    height: 88px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    padding: 0.65rem;
+  }
+
+  .cert-feature-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cert-feature-content .badge-pill {
+    margin: 0 auto 0.75rem auto;
+  }
+
+  .cert-feature-title {
+    font-size: 1.35rem;
+    text-align: center;
+    margin-bottom: 0.65rem;
+    line-height: 1.25;
+  }
+
+  .cert-feature-text {
+    font-size: 0.92rem;
+    line-height: 1.65;
+    text-align: center;
+    margin: 0 auto 1.25rem auto;
+    max-width: 100%;
+    color: #cbd5e1;
+  }
+
+  .cert-checklist {
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
+    text-align: left;
+    gap: 0.6rem;
+  }
+
+  .cert-checklist li {
+    font-size: 0.86rem;
+    line-height: 1.45;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container,
+  .container-wide {
+    padding: 0 1rem;
+  }
+
+  section {
+    padding: 3.5rem 0;
+  }
+
+  .cert-feature-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .cert-feature-badge-wrap {
+    width: 78px;
+    height: 78px;
+  }
+
+  .cert-feature-title {
+    font-size: 1.22rem;
+  }
+
+  .cert-checklist {
+    max-width: 100%;
   }
 }
 
