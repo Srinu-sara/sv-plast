@@ -519,27 +519,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ==========================================
-  // 8. Contractor & Builder FAQ Accordion
-  // ==========================================
-  const faqQuestions = document.querySelectorAll('.faq-question');
-  faqQuestions.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const card = btn.closest('.faq-card');
-      const isExpanded = btn.getAttribute('aria-expanded') === 'true';
-
-      // Toggle other cards closed for clean accordion UX
-      document.querySelectorAll('.faq-card').forEach(c => {
-        if (c !== card) {
-          c.classList.remove('active');
-          c.querySelector('.faq-question')?.setAttribute('aria-expanded', 'false');
-        }
-      });
-
-      card?.classList.toggle('active', !isExpanded);
-      btn.setAttribute('aria-expanded', String(!isExpanded));
-    });
-  });
 
   // Lightbox view for gallery
   const lightboxModal = document.getElementById('lightbox-modal');

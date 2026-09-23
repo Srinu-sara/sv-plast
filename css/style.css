@@ -189,7 +189,6 @@ select {
 .section-work,
 .section-why,
 .section-about,
-.section-faq,
 .section-contact {
   content-visibility: auto;
   contain-intrinsic-size: 1px 750px;
@@ -1929,81 +1928,7 @@ section {
   font-size: 0.95rem;
 }
 
-/* ==========================================================================
-   Contractor & Builder FAQ Section
-   ========================================================================== */
-.section-faq {
-  padding: 5.5rem 0;
-}
 
-.faq-container {
-  max-width: 880px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 1.15rem;
-}
-
-.faq-card {
-  padding: 0;
-  overflow: hidden;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-subtle);
-}
-
-.faq-card:hover {
-  border-color: var(--border-brand);
-}
-
-.faq-question {
-  width: 100%;
-  padding: 1.4rem 1.75rem;
-  background: none;
-  border: none;
-  color: #fff;
-  font-family: var(--font-heading);
-  font-size: 1.05rem;
-  font-weight: 700;
-  text-align: left;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-  cursor: pointer;
-  transition: var(--transition-smooth);
-}
-
-.faq-question:hover {
-  color: var(--brand-green-light);
-}
-
-.faq-chevron {
-  font-size: 1.3rem;
-  color: var(--brand-green-light);
-  transition: transform 0.3s ease;
-}
-
-.faq-card.active .faq-chevron {
-  transform: rotate(180deg);
-}
-
-.faq-answer {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding 0.3s ease;
-  padding: 0 1.75rem;
-}
-
-.faq-card.active .faq-answer {
-  max-height: 300px;
-  padding: 0 1.75rem 1.5rem;
-}
-
-.faq-answer p {
-  color: var(--text-muted);
-  font-size: 0.95rem;
-  line-height: 1.7;
-}
 
 /* ==========================================================================
    Commercial Quote & Enterprise Contact Engine
