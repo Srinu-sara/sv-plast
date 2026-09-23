@@ -162,10 +162,19 @@ class SVCloudHub {
     return { instagram: [], youtube: [], gallery: [] };
   }
 
-  // Add new media item
+  // Add new media item (supports single item or array)
   async addItem(section, itemData) {
+    return this.addItems(section, Array.isArray(itemData) ? itemData : [itemData]);
+  }
+
+  // Add multiple media items in a single cloud write
+  async addItems(section, itemsArray) {
     if (!['instagram', 'youtube', 'gallery'].includes(section)) {
       throw new Error('Invalid section: ' + section);
+    }
+    const list = Array.isArray(itemsArray) ? itemsArray : [itemsArray];
+    if (list.length === 0) {
+      return { success: true, data: this.cachedData };
     }
 
     if (this.isConfigured()) {
@@ -175,7 +184,7 @@ class SVCloudHub {
       if (!currentData[section]) currentData[section] = [];
 
       // Add to top of list
-      currentData[section].unshift(itemData);
+      currentData[section].unshift(...list);
 
       // Save back to Firestore
       await docRef.set(currentData);
@@ -189,12 +198,46 @@ class SVCloudHub {
       const res = await fetch('/api/media/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ section, ...itemData })
+        body: JSON.stringify({ section, items: list, ...list[0] })
       });
       if (res.ok) return await res.json();
     } catch (e) {}
 
     return { success: false, message: 'Cloud database not connected.' };
+  }
+
+  // Update order of items in a section
+  async updateOrder(section, reorderedItems) {
+    if (!['instagram', 'youtube', 'gallery'].includes(section)) {
+      throw new Error('Invalid section: ' + section);
+    }
+    if (!Array.isArray(reorderedItems)) {
+      throw new Error('reorderedItems must be an array');
+    }
+
+    if (this.isConfigured()) {
+      const docRef = this.db.collection('sv_media').doc('content');
+      const doc = await docRef.get();
+      let currentData = doc.exists ? doc.data() : await this.fetchSeedData();
+      currentData[section] = reorderedItems;
+
+      await docRef.set(currentData);
+      this.cachedData = currentData;
+      this.notifySubscribers(currentData);
+      return { success: true, message: 'Order updated in cloud.', data: currentData };
+    }
+
+    // Fallback: try local server API
+    try {
+      const res = await fetch('/api/media/order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ section, items: reorderedItems })
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {}
+
+    return { success: false, message: 'Could not connect to cloud to update order.' };
   }
 
   // Delete media item permanently from cloud

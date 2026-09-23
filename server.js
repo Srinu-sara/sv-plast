@@ -20,11 +20,16 @@ const uploadDir = path.join(__dirname, 'images', 'uploads');
 const dataDir = path.join(__dirname, 'data');
 const dataFilePath = path.join(dataDir, 'media.json');
 
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
+try {
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+  }
+} catch (e) {
+  // Read-only filesystem in serverless environments
+  console.warn('Storage directory check:', e.message);
 }
 
 // Multer Storage setup for gallery photo uploads
@@ -90,9 +95,9 @@ app.get('/api/media', (req, res) => {
   res.json({ success: true, data: responseData });
 });
 
-// 2. POST /api/media/add - Add new item to section
-app.post('/api/media/add', upload.single('photo'), (req, res) => {
-  const { section, title, url, location } = req.body;
+// 2. POST /api/media/add - Add new item(s) to section
+app.post('/api/media/add', upload.any(), (req, res) => {
+  const { section, title, url, location, items } = req.body;
   
   if (!['instagram', 'youtube', 'gallery'].includes(section)) {
     return res.status(400).json({ success: false, message: 'Invalid section specified.' });
@@ -100,23 +105,37 @@ app.post('/api/media/add', upload.single('photo'), (req, res) => {
 
   const currentData = getMediaData();
   const dateStr = new Date().toISOString().split('T')[0];
-  let newItem = null;
+
+  // If array of items passed as JSON
+  if (Array.isArray(items) && items.length > 0) {
+    if (!currentData[section]) currentData[section] = [];
+    currentData[section].unshift(...items);
+    saveMediaData(currentData);
+    return res.json({
+      success: true,
+      message: `Successfully added ${items.length} items to ${section}!`,
+      data: currentData
+    });
+  }
+
+  let newItems = [];
 
   if (section === 'instagram') {
     if (!url) {
       return res.status(400).json({ success: false, message: 'Instagram post/reel URL is required.' });
     }
     let imageUrl = 'images/frame_018.webp';
-    if (req.file) {
-      imageUrl = 'images/uploads/' + req.file.filename;
+    const file = req.files && req.files[0];
+    if (file) {
+      imageUrl = 'images/uploads/' + file.filename;
     }
-    newItem = {
+    newItems.push({
       id: 'insta_' + Date.now(),
       url: url.trim(),
       imageUrl: imageUrl,
       title: title || 'Instagram Video Update',
       date: dateStr
-    };
+    });
   } else if (section === 'youtube') {
     if (!url) {
       return res.status(400).json({ success: false, message: 'YouTube video URL is required.' });
@@ -125,44 +144,48 @@ app.post('/api/media/add', upload.single('photo'), (req, res) => {
     if (!videoId) {
       return res.status(400).json({ success: false, message: 'Could not extract YouTube video ID from URL.' });
     }
-    newItem = {
+    newItems.push({
       id: 'yt_' + Date.now(),
       url: url.trim(),
       videoId: videoId,
       title: title || 'YouTube Video Highlight',
       date: dateStr
-    };
+    });
   } else if (section === 'gallery') {
-    let imageUrl = '';
-    if (req.file) {
-      imageUrl = 'images/uploads/' + req.file.filename;
+    const uploadedFiles = req.files || [];
+    if (uploadedFiles.length > 0) {
+      uploadedFiles.forEach((file, idx) => {
+        newItems.push({
+          id: 'gal_' + Date.now() + '_' + idx,
+          imageUrl: 'images/uploads/' + file.filename,
+          title: title ? (uploadedFiles.length > 1 ? `${title} (${idx + 1})` : title) : 'SV PLAST Project Showcase',
+          location: location || 'Project Site',
+          date: dateStr
+        });
+      });
     } else if (url) {
-      imageUrl = url.trim();
+      newItems.push({
+        id: 'gal_' + Date.now(),
+        imageUrl: url.trim(),
+        title: title || 'SV PLAST Project Showcase',
+        location: location || 'Project Site',
+        date: dateStr
+      });
     } else {
-      return res.status(400).json({ success: false, message: 'Please upload an image file or provide an image URL.' });
+      return res.status(400).json({ success: false, message: 'Please upload image file(s) or provide an image URL.' });
     }
-
-    newItem = {
-      id: 'gal_' + Date.now(),
-      imageUrl: imageUrl,
-      title: title || 'SV PLAST Project Showcase',
-      location: location || 'Project Site',
-      date: dateStr
-    };
   }
 
-  if (newItem) {
+  if (newItems.length > 0) {
     if (!currentData[section]) {
       currentData[section] = [];
     }
-    // Prepend new item to top (Unlimited upload storage)
-    currentData[section].unshift(newItem);
-
+    currentData[section].unshift(...newItems);
     saveMediaData(currentData);
     return res.json({
       success: true,
-      message: `Successfully added to ${section}!`,
-      item: newItem,
+      message: `Successfully added ${newItems.length} item(s) to ${section}!`,
+      items: newItems,
       data: {
         instagram: currentData.instagram || [],
         youtube: currentData.youtube || [],
@@ -205,15 +228,41 @@ const handleDeleteItem = (req, res) => {
 app.delete('/api/media/delete', handleDeleteItem);
 app.post('/api/media/delete', handleDeleteItem);
 
+// 4. POST /api/media/order - Save reordered items
+app.post('/api/media/order', (req, res) => {
+  const { section, items } = req.body;
+  if (!section || !Array.isArray(items) || !['instagram', 'youtube', 'gallery'].includes(section)) {
+    return res.status(400).json({ success: false, message: 'Invalid section or items array.' });
+  }
+
+  const currentData = getMediaData();
+  currentData[section] = items;
+  saveMediaData(currentData);
+
+  res.json({
+    success: true,
+    message: `Order updated for ${section}.`,
+    data: {
+      instagram: currentData.instagram || [],
+      youtube: currentData.youtube || [],
+      gallery: currentData.gallery || []
+    }
+  });
+});
+
 // Fallback to index.html for single-page routing
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`================================================`);
-  console.log(`SV PLAST Web App & API running at http://localhost:${PORT}`);
-  console.log(`Companion Admin Sender App at http://localhost:${PORT}/admin.html`);
-  console.log(`================================================`);
-});
+// Start Server (only when run directly, not when imported)
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`================================================`);
+    console.log(`SV PLAST Web App & API running at http://localhost:${PORT}`);
+    console.log(`Companion Admin Sender App at http://localhost:${PORT}/admin.html`);
+    console.log(`================================================`);
+  });
+}
+
+module.exports = app;

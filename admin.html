@@ -482,6 +482,86 @@
       backdrop-filter: blur(8px);
     }
 
+    /* Multi-photo preview styles for Gallery */
+    .multi-preview-wrap {
+      margin-top: 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 0.85rem;
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .multi-preview-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.65rem;
+    }
+
+    .multi-preview-count {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #34d399;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .btn-clear-multi {
+      background: none;
+      border: none;
+      color: #f87171;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+    }
+
+    .multi-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+      gap: 0.5rem;
+      max-height: 240px;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .multi-preview-card {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: #000;
+    }
+
+    .multi-preview-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .btn-remove-single-file {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      width: 22px;
+      height: 22px;
+      background: rgba(239, 68, 68, 0.9);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    }
+
     /* -------------------------------------------
        SUBMIT SEND BUTTON
        ------------------------------------------- */
@@ -587,9 +667,63 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 0.85rem;
+      gap: 0.75rem;
       position: relative;
       transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .item-reorder-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .btn-reorder {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #f1f5f9;
+      width: 32px;
+      height: 27px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.72rem;
+      font-weight: bold;
+      transition: all 0.15s ease;
+      touch-action: manipulation;
+      padding: 0;
+    }
+
+    .btn-reorder:hover:not(:disabled) {
+      background: rgba(16, 185, 129, 0.25);
+      border-color: #10b981;
+      color: #34d399;
+    }
+
+    .btn-reorder:active:not(:disabled) {
+      transform: scale(0.92);
+      background: #10b981;
+      color: #fff;
+    }
+
+    .btn-reorder:disabled {
+      opacity: 0.2;
+      cursor: not-allowed;
+    }
+
+    .item-order-rank {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--brand-green);
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 6px;
+      padding: 0.2rem 0.45rem;
+      align-self: center;
+      flex-shrink: 0;
     }
 
     .item-card:active {
@@ -1082,13 +1216,24 @@
             </label>
             <div class="file-dropzone" id="dropzone">
               <span class="dropzone-icon">📷</span>
-              <div class="dropzone-title">Tap to select photo</div>
-              <div class="dropzone-sub">Camera or Gallery (JPG, PNG, WEBP)</div>
+              <div class="dropzone-title" id="dropzone-title">Tap to select photo</div>
+              <div class="dropzone-sub" id="dropzone-sub">Camera or Gallery (JPG, PNG, WEBP)</div>
               <input type="file" id="file-input" name="photo" accept="image/*">
             </div>
+
+            <!-- Single Image Preview (for Instagram / fallback) -->
             <div class="img-preview-wrap" id="preview-box">
               <img id="preview-img" src="" alt="Preview">
               <button type="button" class="btn-remove-preview" id="btn-remove-photo">✕ Remove</button>
+            </div>
+
+            <!-- Multiple Image Preview Grid (for Gallery) -->
+            <div class="multi-preview-wrap" id="multi-preview-wrap" style="display: none;">
+              <div class="multi-preview-head">
+                <span class="multi-preview-count" id="multi-preview-count">🖼️ 0 photos selected</span>
+                <button type="button" class="btn-clear-multi" id="btn-clear-multi">Clear All</button>
+              </div>
+              <div class="multi-preview-grid" id="multi-preview-grid"></div>
             </div>
           </div>
 
@@ -1251,27 +1396,44 @@
             urlFieldGroup.style.display = 'block';
             photoFieldGroup.style.display = 'block';
             locationFieldGroup.style.display = 'none';
+            fileInput.multiple = false;
             if (photoLabelText) photoLabelText.textContent = 'Cover Photo';
             if (photoLabelOpt) photoLabelOpt.textContent = '(Optional for Reel)';
+            if (dropzoneTitle) dropzoneTitle.textContent = 'Tap to select cover photo';
+            if (dropzoneSub) dropzoneSub.textContent = 'Camera or Gallery (JPG, PNG, WEBP)';
             urlLabel.querySelector('span').textContent = 'Instagram Public URL';
             urlInput.placeholder = 'https://www.instagram.com/reel/... or Post URL';
             urlHint.textContent = 'Paste link copied from Instagram app.';
             urlInput.required = true;
+            multiPreviewWrap.style.display = 'none';
+            if (fileInput.files && fileInput.files[0] && selectedGalleryFiles.length === 0) {
+              previewBox.style.display = 'block';
+            }
           } else if (sec === 'youtube') {
             urlFieldGroup.style.display = 'block';
             photoFieldGroup.style.display = 'none';
             locationFieldGroup.style.display = 'none';
+            fileInput.multiple = false;
             urlLabel.querySelector('span').textContent = 'YouTube Public URL';
             urlInput.placeholder = 'https://youtu.be/... or Shorts URL';
             urlHint.textContent = 'Paste link copied from YouTube app.';
             urlInput.required = true;
+            multiPreviewWrap.style.display = 'none';
+            previewBox.style.display = 'none';
           } else if (sec === 'gallery') {
             urlFieldGroup.style.display = 'none';
             photoFieldGroup.style.display = 'block';
             locationFieldGroup.style.display = 'block';
-            if (photoLabelText) photoLabelText.textContent = 'Select Project Photo';
-            if (photoLabelOpt) photoLabelOpt.textContent = '(Required)';
+            fileInput.multiple = true;
+            if (photoLabelText) photoLabelText.textContent = 'Select Project Photo(s)';
+            if (photoLabelOpt) photoLabelOpt.textContent = '(Select 1 or Multiple)';
+            if (dropzoneTitle) dropzoneTitle.textContent = 'Tap to select photo(s)';
+            if (dropzoneSub) dropzoneSub.textContent = 'Select 1 or multiple photos for Gallery';
             urlInput.required = false;
+            previewBox.style.display = 'none';
+            if (selectedGalleryFiles.length > 0) {
+              multiPreviewWrap.style.display = 'block';
+            }
           }
         });
       });
@@ -1302,13 +1464,21 @@
       });
 
       // -------------------------------------------------------------
-      // 5. File Picker & Image Preview
+      // 5. File Picker & Multi-Image Preview
       // -------------------------------------------------------------
       const dropzone = document.getElementById('dropzone');
+      const dropzoneTitle = document.getElementById('dropzone-title');
+      const dropzoneSub = document.getElementById('dropzone-sub');
       const fileInput = document.getElementById('file-input');
       const previewBox = document.getElementById('preview-box');
       const previewImg = document.getElementById('preview-img');
       const btnRemovePhoto = document.getElementById('btn-remove-photo');
+      const multiPreviewWrap = document.getElementById('multi-preview-wrap');
+      const multiPreviewGrid = document.getElementById('multi-preview-grid');
+      const multiPreviewCount = document.getElementById('multi-preview-count');
+      const btnClearMulti = document.getElementById('btn-clear-multi');
+
+      let selectedGalleryFiles = [];
 
       dropzone.addEventListener('click', () => fileInput.click());
 
@@ -1320,16 +1490,68 @@
       dropzone.addEventListener('drop', (e) => {
         e.preventDefault();
         dropzone.classList.remove('dragover');
-        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-          fileInput.files = e.dataTransfer.files;
-          handleFilePreview(fileInput.files[0]);
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+          handleIncomingFiles(e.dataTransfer.files);
         }
       });
 
       fileInput.addEventListener('change', function () {
-        if (this.files && this.files[0]) {
-          handleFilePreview(this.files[0]);
+        if (this.files && this.files.length > 0) {
+          handleIncomingFiles(this.files);
         }
+      });
+
+      function handleIncomingFiles(fileList) {
+        const sec = sectionInput.value || 'instagram';
+        const filesArray = Array.from(fileList);
+
+        if (sec === 'gallery') {
+          // Append new photos to selected list
+          selectedGalleryFiles.push(...filesArray);
+          renderMultiPreviews();
+        } else {
+          // Single file for instagram/reel cover
+          selectedGalleryFiles = [];
+          if (filesArray[0]) {
+            handleSingleFilePreview(filesArray[0]);
+          }
+        }
+      }
+
+      function renderMultiPreviews() {
+        if (selectedGalleryFiles.length === 0) {
+          multiPreviewWrap.style.display = 'none';
+          multiPreviewGrid.innerHTML = '';
+          fileInput.value = '';
+          return;
+        }
+
+        multiPreviewWrap.style.display = 'block';
+        previewBox.style.display = 'none';
+        multiPreviewCount.textContent = `🖼️ ${selectedGalleryFiles.length} photo(s) selected`;
+
+        let gridHtml = '';
+        selectedGalleryFiles.forEach((file, idx) => {
+          const tempUrl = URL.createObjectURL(file);
+          gridHtml += `
+            <div class="multi-preview-card" data-idx="${idx}">
+              <img src="${tempUrl}" class="multi-preview-img" alt="Selected ${idx + 1}">
+              <button type="button" class="btn-remove-single-file" onclick="removeSingleGalleryFile(${idx})" title="Remove this photo">✕</button>
+            </div>
+          `;
+        });
+        multiPreviewGrid.innerHTML = gridHtml;
+      }
+
+      window.removeSingleGalleryFile = function(idx) {
+        selectedGalleryFiles.splice(idx, 1);
+        renderMultiPreviews();
+      };
+
+      btnClearMulti?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        selectedGalleryFiles = [];
+        renderMultiPreviews();
       });
 
       btnRemovePhoto?.addEventListener('click', (e) => {
@@ -1339,11 +1561,12 @@
         previewBox.style.display = 'none';
       });
 
-      function handleFilePreview(file) {
+      function handleSingleFilePreview(file) {
         const reader = new FileReader();
         reader.onload = function (e) {
           previewImg.src = e.target.result;
           previewBox.style.display = 'block';
+          multiPreviewWrap.style.display = 'none';
         };
         reader.readAsDataURL(file);
       }
@@ -1382,14 +1605,86 @@
       senderForm.addEventListener('submit', async function (e) {
         e.preventDefault();
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span>⏳</span> Publishing to SV PLAST...';
 
         const sec = sectionInput.value || 'instagram';
         const title = (document.getElementById('item-title').value || '').trim();
         const url = (document.getElementById('item-url').value || '').trim();
         const locationVal = (document.getElementById('item-location').value || '').trim();
 
-        // Read attached photo as Base64 Data URL if uploaded
+        // Check if multiple gallery photos are selected
+        if (sec === 'gallery' && selectedGalleryFiles.length > 0) {
+          submitBtn.innerHTML = `<span>⏳</span> Publishing ${selectedGalleryFiles.length} photos...`;
+
+          try {
+            // Convert all selected photos to Base64
+            const base64List = await Promise.all(selectedGalleryFiles.map(file => {
+              return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = () => resolve('');
+                reader.readAsDataURL(file);
+              });
+            }));
+
+            const now = Date.now();
+            const dateStr = new Date().toISOString().split('T')[0];
+            const newItems = base64List.filter(Boolean).map((dataUrl, idx) => ({
+              id: 'gal_' + now + '_' + idx,
+              title: title ? (selectedGalleryFiles.length > 1 ? `${title} (${idx + 1})` : title) : 'SV PLAST Project Showcase',
+              url: '#',
+              imageUrl: dataUrl,
+              location: locationVal || 'Project Site',
+              date: dateStr
+            }));
+
+            if (window.SVCloud && window.SVCloud.isConfigured()) {
+              const res = await window.SVCloud.addItems('gallery', newItems);
+              if (res.success) {
+                showToast(`✅ ${newItems.length} photos published to Gallery!`, true);
+                senderForm.reset();
+                selectedGalleryFiles = [];
+                renderMultiPreviews();
+                fetchLiveItems();
+                setTimeout(() => { btnViewManage?.click(); }, 800);
+                return;
+              }
+            }
+
+            // Fallback to local server API
+            const formData = new FormData();
+            formData.append('section', 'gallery');
+            formData.append('title', title);
+            formData.append('location', locationVal);
+            selectedGalleryFiles.forEach(f => formData.append('photos', f));
+
+            const response = await fetch('/api/media/add', {
+              method: 'POST',
+              body: formData
+            });
+            const result = await response.json();
+            if (result.success) {
+              showToast(result.message || `✅ ${selectedGalleryFiles.length} photos published!`, true);
+              senderForm.reset();
+              selectedGalleryFiles = [];
+              renderMultiPreviews();
+              fetchLiveItems();
+              setTimeout(() => { btnViewManage?.click(); }, 800);
+            } else {
+              showToast(result.message || 'Please connect Cloud Hub to publish.', false);
+            }
+          } catch (err) {
+            console.error('Batch upload error:', err);
+            showToast('Error uploading photos. Please check file sizes.', false);
+          } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span>📤</span> Publish to SV PLAST';
+          }
+          return;
+        }
+
+        // Single Item submission (Instagram / YouTube / single photo)
+        submitBtn.innerHTML = '<span>⏳</span> Publishing to SV PLAST...';
+
         let imageUrl = '';
         if (fileInput.files && fileInput.files[0]) {
           try {
@@ -1429,6 +1724,8 @@
               showToast('✅ Published to Centralized Cloud Hub!', true);
               senderForm.reset();
               previewBox.style.display = 'none';
+              selectedGalleryFiles = [];
+              renderMultiPreviews();
               fetchLiveItems();
               setTimeout(() => { btnViewManage?.click(); }, 800);
               return;
@@ -1447,6 +1744,8 @@
             showToast(result.message || '✅ Published successfully to SV PLAST!', true);
             senderForm.reset();
             previewBox.style.display = 'none';
+            selectedGalleryFiles = [];
+            renderMultiPreviews();
             fetchLiveItems();
             setTimeout(() => { btnViewManage?.click(); }, 800);
           } else {
@@ -1688,20 +1987,33 @@
           const tagClass = sec === 'instagram' ? 'tag-insta' : (sec === 'youtube' ? 'tag-youtube' : 'tag-gallery');
 
           html += `<div class="sec-group-header">
-            <span>${icon} ${secTitle} (${items.length}/5)</span>
-            <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 500;">Live on app</span>
+            <span>${icon} ${secTitle} (${items.length} items)</span>
+            <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 500;">Use ▲ ▼ to edit display order</span>
           </div>`;
 
           if (items.length === 0) {
             html += `<div style="color: var(--text-muted); font-size: 0.8rem; padding: 0.75rem 0.5rem; text-align: center; background: rgba(255,255,255,0.02); border-radius: 10px; margin-bottom: 0.5rem;">No items in this section.</div>`;
           } else {
-            items.forEach(item => {
+            items.forEach((item, idx) => {
               const thumb = item.imageUrl || (item.videoId ? `https://img.youtube.com/vi/${item.videoId}/mqdefault.jpg` : '') || 'images/svplast_logo.png';
               const cleanTitle = (item.title || 'Untitled').replace(/"/g, '&quot;').replace(/'/g, "\\'");
               const typeLabel = sec === 'instagram' ? 'Reel' : (sec === 'youtube' ? 'Video' : 'Photo');
+              const isFirst = idx === 0;
+              const isLast = idx === items.length - 1;
 
               html += `
-                <div class="item-card" data-card-id="${item.id}">
+                <div class="item-card" data-card-id="${item.id}" data-section="${sec}" data-index="${idx}">
+                  <!-- Reorder Up/Down Controls -->
+                  <div class="item-reorder-group">
+                    <button type="button" class="btn-reorder" title="Move Up" ${isFirst ? 'disabled' : ''} onclick="moveItem('${sec}', ${idx}, -1)">
+                      ▲
+                    </button>
+                    <button type="button" class="btn-reorder" title="Move Down" ${isLast ? 'disabled' : ''} onclick="moveItem('${sec}', ${idx}, 1)">
+                      ▼
+                    </button>
+                  </div>
+                  <span class="item-order-rank">#${idx + 1}</span>
+
                   <div class="item-info">
                     <div class="item-thumb-box">
                       <img src="${thumb}" class="item-thumb" onerror="this.src='images/svplast_logo.png'" alt="Thumb">
@@ -1726,6 +2038,41 @@
 
         manageList.innerHTML = html;
       }
+
+      // Reorder item handler (Move Up / Down)
+      window.moveItem = async function (sec, fromIndex, direction) {
+        if (!currentRawData[sec]) return;
+        const items = [...currentRawData[sec]];
+        const toIndex = fromIndex + direction;
+
+        if (toIndex < 0 || toIndex >= items.length) return;
+
+        // Swap items
+        const temp = items[fromIndex];
+        items[fromIndex] = items[toIndex];
+        items[toIndex] = temp;
+
+        currentRawData[sec] = items;
+        renderManageItems(currentRawData);
+
+        try {
+          if (window.SVCloud && window.SVCloud.isConfigured()) {
+            await window.SVCloud.updateOrder(sec, items);
+            showToast(`↕️ ${sec.toUpperCase()} order updated and saved!`, true);
+          } else {
+            // Local fallback
+            await fetch('/api/media/order', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ section: sec, items: items })
+            });
+            showToast(`↕️ Order updated.`, true);
+          }
+        } catch (err) {
+          console.error('Failed to save order:', err);
+          showToast('Notice: Could not save order to cloud.', false);
+        }
+      };
 
       // Initial load and real-time subscription
       fetchLiveItems();

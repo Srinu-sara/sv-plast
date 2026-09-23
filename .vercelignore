@@ -1,0 +1,9 @@
+# Local development server (not needed for Vercel static CDN deployment)
+server.js
+
+# Git metadata
+.git
+.gitignore
+
+# Agent & workspace config
+.agents
