@@ -1,0 +1,21 @@
+name: Sync Fork with Upstream
+
+on:
+  schedule:
+    - cron: '0 */6 * * *' # Runs automatically every 6 hours
+  workflow_dispatch: # Allows manual trigger anytime
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout target repository
+        uses: actions/checkout@v4
+
+      - name: Sync upstream changes
+        uses: repo-sync/github-sync@v2
+        with:
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          upstream_repository: satyan9/sv-plasta
+          upstream_branch: main
+          target_branch: main
